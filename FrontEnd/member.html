@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="text/javascript" src="js/quicksight-embedding-js-sdk.min.js"></script>
+    <title>Member</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/aws-sdk-2.517.0.min.js"></script>
+	<style>
+      iframe {border: 0;}
+      body {margin:0;}
+    </style>
+    <script>
+	  $(document).ready(function () {
+	    var idToken = getCookie('id_token');
+        
+		if (idToken == null){
+			alert('You are not logged in.');
+			return;
+		}
+      });
+	  
+	  
+	  function listRecord(){
+	    var authToken = getCookie('id_token');
+		
+		$.ajax({
+            method: 'Get',
+            url: _config.api.invokeUrl,
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                PickupLocation: {
+                    Latitude: pickupLocation.latitude,
+                    Longitude: pickupLocation.longitude
+                }
+            }),
+            contentType: 'application/json',
+            success: completeRequest,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting ride: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
+            }
+        });
+	  }
+	  
+	  function AddRecord(){
+		var authToken = getCookie('id_token');
+		
+		$.ajax({
+            method: 'POST',
+            url: _config.api.invokeUrl,
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                PickupLocation: {
+                    Latitude: pickupLocation.latitude,
+                    Longitude: pickupLocation.longitude
+                }
+            }),
+            contentType: 'application/json',
+            success: completeRequest,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting ride: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
+            }
+        });
+	  }
+	  
+	  function getCookie(name) {
+        var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return v ? v[2] : null;
+      }
+    </script>
+  </head>
+  <body>
+    <div><img id='logo' src="" style="height:50px;margin-top: 10px;margin-left: 10px;padding-bottom: 10px;" /></div>
+    <div id="memeberContainer"></div>
+  </body>
+</html>
