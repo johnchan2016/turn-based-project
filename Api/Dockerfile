@@ -19,4 +19,4 @@ WORKDIR /app
 # run env if any
 
 COPY --from=build /app ./
-ENTRYPOINT ["dotnet", "aspnetapp.dll"]
+ENTRYPOINT ["dotnet", "turn-based-api.dll"]
