@@ -14,7 +14,7 @@ namespace turn_based_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class TurnBasedController : ControllerBase
     {
         private readonly ITurnbasedService _turnbasedService;
