@@ -17,8 +17,12 @@ FROM mcr.microsoft.com/dotnet/aspnet:3.1
 WORKDIR /app
 
 # run env if any
-ENV ASPNETCORE_URLS=http://+:80  
-EXPOSE 80
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true  
+ENV ASPNETCORE_URLS=http://+:80;https://+:5001;http://+:5000
+EXPOSE 80 5000 5001
 
 COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "turn-based-api.dll"]
+# ENTRYPOINT ["dotnet", "turn-based-api.dll", "--urls", "https://0.0.0.0:5000"]

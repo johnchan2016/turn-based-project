@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RootNamespace>turn_based_api</RootNamespace>
+    <UserSecretsId>b40bfd5f-edd8-4c97-a1e2-b544d74093f0</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
