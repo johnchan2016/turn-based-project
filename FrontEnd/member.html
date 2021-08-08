@@ -29,13 +29,16 @@
           method: 'Get',
           url: `${_config.api.invokeUrl}/api/turnbased/${gameId}`,
           headers: {
-              Authorization: authToken
+              'Authorization': authToken,
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Accept'
           },
           contentType: 'application/json',
           success: successRequest,
           error: function(xhr, status, error) {
             var err = eval("(" + xhr.responseText + ")");
-            alert(err.Message);
+            alert(err);
           }
       })
 	  }
