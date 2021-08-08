@@ -1,6 +1,5 @@
-FROM alpine:3.14
+FROM nginx:alpine
 
-WORKDIR /app
-COPY . .
+COPY . /usr/share/nginx/html/index.html
 
 EXPOSE 80
