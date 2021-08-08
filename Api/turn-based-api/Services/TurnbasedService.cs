@@ -31,7 +31,7 @@ namespace turn_based_api.Services
         {
             _logger = logger;
 
-            var awsCredfilePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? @"C:\Users\johnchan\.aws\credentials" : @"\app\.aws\credentials";
+            var awsCredfilePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? @"C:\Users\johnchan\.aws\credentials" : @"/app/.aws/credentials";
 
             var sharedFile = new SharedCredentialsFile(awsCredfilePath);
             if (sharedFile.TryGetProfile("default", out basicProfile) && 
