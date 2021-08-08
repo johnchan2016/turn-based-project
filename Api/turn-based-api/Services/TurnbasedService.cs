@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -30,7 +31,9 @@ namespace turn_based_api.Services
         {
             _logger = logger;
 
-            var sharedFile = new SharedCredentialsFile();
+            var awsCredfilePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? @"C:\Users\johnchan\.aws\credentials" : @"\app\.aws\credentials";
+
+            var sharedFile = new SharedCredentialsFile(awsCredfilePath);
             if (sharedFile.TryGetProfile("default", out basicProfile) && 
                 AWSCredentialsFactory.TryGetAWSCredentials(basicProfile, sharedFile, out awsCredentials)
                 ) 
