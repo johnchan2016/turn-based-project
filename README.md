@@ -2,7 +2,7 @@
 # mount aws credentials
 # api
 docker build -t api .
-docker run -d -it -v $HOME/.aws/:/app/.aws/:ro --name api api -p 8080:80 --restart always
+docker run -d -it -p 8080:80 -v $HOME/.aws/:/app/.aws/:ro --restart always --name api api 
 
 # frontend
 docker build -t frontend .
