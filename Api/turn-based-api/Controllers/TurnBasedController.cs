@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -39,11 +40,13 @@ namespace turn_based_api.Controllers
             try
             {
                 var game = await _turnbasedService.GetItem(gameId).ConfigureAwait(false);
+
+                Debug.WriteLine($"game: {JsonSerializer.Serialize(game)}");
                 return game;
             }
             catch(Exception ex)
             {
-                return null;
+                throw new Exception($"error: {ex}");
             }
         }
 
