@@ -25,54 +25,55 @@
 	  function listRecord(gameId){
 	    var authToken = getCookie('id_token');
 		
-		  var request = $.ajax({
+		  $.ajax({
           method: 'Get',
           url: `${_config.api.invokeUrl}/api/turnbased/${gameId}`,
           headers: {
               Authorization: authToken
           },
           contentType: 'application/json',
-      });
-
-      request.done((res) => {
-        console.log('res: ', res);
-
-        var html = `
-          <table>
-            <tbody>
-              <tr>
-                <td>GameId</td>
-                <td>Heap1</td>
-                <td>Heap2</td>
-                <td>Heap3</td>
-                <td>User1</td>
-                <td>User2</td>
-                <td>LastMoveBy</td>
-              </tr>
-              <tr>
-                <td>${res.gameId}</td>
-                <td>${res.heap1}</td>
-                <td>${res.heap2}</td>
-                <td>${res.heap3}</td>
-                <td>${res.user1}</td>
-                <td>${res.user2}</td>
-                <td>${res.lastMoveBy}</td>
-              </tr>
-            </tbody>
-          </table>
-        `;
-        $("#listBtn").html( html );
-      })
-
-      request.fail((jqXHR, textStatus) => {
-        alert( "Request failed: " + textStatus );
+          success: successRequest(res),
+          error: function(xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+          }
       })
 	  }
 	  
 	  function getCookie(name) {
-        var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        return v ? v[2] : null;
-      }
+      var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+      return v ? v[2] : null;
+    }
+
+    function successRequest(res) {
+      console.log('res: ', res);
+
+      var html = `
+        <table>
+          <tbody>
+            <tr>
+              <td>GameId</td>
+              <td>Heap1</td>
+              <td>Heap2</td>
+              <td>Heap3</td>
+              <td>User1</td>
+              <td>User2</td>
+              <td>LastMoveBy</td>
+            </tr>
+            <tr>
+              <td>${res.gameId}</td>
+              <td>${res.heap1}</td>
+              <td>${res.heap2}</td>
+              <td>${res.heap3}</td>
+              <td>${res.user1}</td>
+              <td>${res.user2}</td>
+              <td>${res.lastMoveBy}</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+      $("#listBtn").html( html );
+    }
     </script>
   </head>
   <body>
