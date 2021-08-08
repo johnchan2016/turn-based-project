@@ -1,8 +1,8 @@
 # turn-based-project
 # mount aws credentials
 # api
-docker build -t api . --build-arg HOME="/home"
-docker run -d -p 8080:80 --restart always --name api api -v $HOME/.aws/:/home/.aws/:ro
+docker build -t api .
+docker run -d -it -v $HOME/.aws/:/app/.aws/:ro --name api api -p 8080:80 --restart always
 
 # frontend
 docker build -t frontend .
