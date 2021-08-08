@@ -32,7 +32,7 @@
               Authorization: authToken
           },
           contentType: 'application/json',
-          success: successRequest(res),
+          success: successRequest,
           error: function(xhr, status, error) {
             var err = eval("(" + xhr.responseText + ")");
             alert(err.Message);
