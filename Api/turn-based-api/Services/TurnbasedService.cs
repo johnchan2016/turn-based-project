@@ -6,6 +6,8 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using turn_based_api.Entities;
 using turn_based_api.Models;
 using turn_based_api.Services.Interface;
@@ -15,13 +17,19 @@ namespace turn_based_api.Services
 
     public class TurnbasedService: ITurnbasedService
     {
-        AmazonDynamoDBClient client = null;
-        DynamoDBContext context = null; 
+        private readonly ILogger _logger;
 
-        public TurnbasedService()
+        AmazonDynamoDBClient client = null;
+        DynamoDBContext context = null;
+        CredentialProfile basicProfile;
+        AWSCredentials awsCredentials;
+
+        public TurnbasedService(
+            ILogger<TurnbasedService> logger
+            )
         {
-            CredentialProfile basicProfile;
-            AWSCredentials awsCredentials;
+            _logger = logger;
+
             var sharedFile = new SharedCredentialsFile();
             if (sharedFile.TryGetProfile("default", out basicProfile) && 
                 AWSCredentialsFactory.TryGetAWSCredentials(basicProfile, sharedFile, out awsCredentials)
@@ -34,6 +42,9 @@ namespace turn_based_api.Services
 
         public async Task<TurnbasedGame> GetItem(string gameId)
         {
+            _logger.LogInformation($"awsCredentials: {JsonConvert.SerializeObject(awsCredentials)}");
+            _logger.LogInformation($"basicProfile: {JsonConvert.SerializeObject(basicProfile)}");
+
             var game = await context.LoadAsync<TurnbasedGame>(gameId).ConfigureAwait(false);
 
             return game;

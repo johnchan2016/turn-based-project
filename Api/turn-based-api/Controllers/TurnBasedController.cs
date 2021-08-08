@@ -39,7 +39,7 @@ namespace turn_based_api.Controllers
         {
             try
             {
-                var game = await _turnbasedService.GetItem(gameId).ConfigureAwait(false);
+                var game = await _turnbasedService.GetItem(gameId);
 
                 Debug.WriteLine($"game: {JsonSerializer.Serialize(game)}");
                 return game;
