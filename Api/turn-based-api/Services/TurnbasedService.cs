@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
-using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 using turn_based_api.Entities;
 using turn_based_api.Models;
 using turn_based_api.Services.Interface;
@@ -16,12 +16,20 @@ namespace turn_based_api.Services
     public class TurnbasedService: ITurnbasedService
     {
         AmazonDynamoDBClient client = null;
-        DynamoDBContext context = null;
+        DynamoDBContext context = null; 
 
         public TurnbasedService()
         {
-            client = new AmazonDynamoDBClient();
-            context = new DynamoDBContext(client);
+            CredentialProfile basicProfile;
+            AWSCredentials awsCredentials;
+            var sharedFile = new SharedCredentialsFile();
+            if (sharedFile.TryGetProfile("default", out basicProfile) && 
+                AWSCredentialsFactory.TryGetAWSCredentials(basicProfile, sharedFile, out awsCredentials)
+                ) 
+            {
+                client = new AmazonDynamoDBClient(awsCredentials, basicProfile.Region);
+                context = new DynamoDBContext(client);
+            }
         }
 
         public async Task<TurnbasedGame> GetItem(string gameId)
