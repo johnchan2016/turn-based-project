@@ -68,16 +68,19 @@ namespace turn_based_api
         // configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // global cors policy
+            app.UseCors(
+                builder => builder
+                     .AllowAnyHeader()
+                     .AllowAnyMethod()
+                     .SetIsOriginAllowed((host) => true)
+                     .AllowCredentials()
+            );
+
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
 
             app.UseEndpoints(x => x.MapControllers());
         }
