@@ -1,2 +1,6 @@
+FROM alpine:3.14
+
 WORKDIR /app
-COPY ./ ./
+COPY . .
+
+EXPOSE 80
