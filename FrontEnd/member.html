@@ -27,7 +27,7 @@
 		
 		  var request = $.ajax({
           method: 'Get',
-          url: `${_config.api.invokeUrl}/${gameId}`,
+          url: `${_config.api.invokeUrl}/api/turnbased/${gameId}`,
           headers: {
               Authorization: authToken
           },
