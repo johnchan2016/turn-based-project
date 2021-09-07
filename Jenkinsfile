@@ -24,7 +24,7 @@ pipeline {
             steps {
                 echo "Current BRANCH_NAME: " + env.BRANCH_NAME
                 environment = GetEnvByBranch(env.BRANCH_NAME)
-                echo "env: " + environment
+                echo "env: " + environment 
             }
         }
     }
