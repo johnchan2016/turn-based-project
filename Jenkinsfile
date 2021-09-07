@@ -23,7 +23,8 @@ pipeline {
 
             steps {
                 echo "Current BRANCH_NAME: " + env.BRANCH_NAME
-                echo "Current GIT_BRANCH: " + env.GIT_BRANCH
+                environment = GetEnvByBranch(env.BRANCH_NAME)
+                echo "env: " + environment
             }
         }
     }
@@ -98,4 +99,20 @@ pipeline {
         }
     }
     */
+}
+
+def GetEnvByBranch(branchName){
+    if (branchName == '') {
+        return ''
+    }
+
+    if (branchName ==~ /^(feature)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
+        return 'dev'
+    } else if  (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
+        return 'uat'
+    } else if (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+)$/) {
+        return 'prod'
+    } else {
+        return ''
+    }
 }
