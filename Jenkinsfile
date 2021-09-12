@@ -14,9 +14,9 @@ pipeline {
         ImageName = 'myhk2009/turn-based-api';
         DockerHubCredential = 'dockerHubCredential';
         GithubCredential = 'githubCredential';
-        CurrentEnv = '';
-        CurrentTimestamp = '';
-        CurrentHelmPath = '';
+        CurrentTimestamp = GetTimestamp();
+        CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
+        CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
     }
 
     agent any
@@ -29,15 +29,12 @@ pipeline {
         stage("Set Configs") {
             steps {
                 script {
-                    sh 'printenv | sort'
-                    env.CurrentTimestamp = GetTimestamp();
-                    env.CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
-                    env.CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
-                    
-                    sh 'Current BRANCH_NAME: ${BRANCH_NAME}';
-                    sh 'currentEnv: ${CurrentEnv}';
-                    sh 'currentTimestamp: ${CurrentTimestamp}';
+                    sh 'printenv | sort'                    
                 }
+
+                echo 'Current BRANCH_NAME: ' + ${BRANCH_NAME};
+                echo 'currentEnv: ' + ${CurrentEnv};
+                echo 'currentTimestamp: ' + ${CurrentTimestamp};
             }
         }
 
