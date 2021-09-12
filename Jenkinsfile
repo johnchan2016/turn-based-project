@@ -27,9 +27,11 @@ pipeline {
         // update tag in values.yaml
         // update config & push to github
         stage('Initialize'){
-            def dockerHome = tool 'myDocker'
-            env.PATH = "${dockerHome}/bin:${env.PATH}"
-            echo 'env.Path: ' + env.PATH
+            steps {
+                def dockerHome = tool 'myDocker'
+                env.PATH = "${dockerHome}/bin:${env.PATH}"
+                echo 'env.Path: ' + env.PATH
+            }
         }
 
         stage('Set Configs') {
