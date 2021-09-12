@@ -32,9 +32,9 @@ pipeline {
                     sh 'printenv | sort'                    
                 }
 
-                echo 'Current BRANCH_NAME: ' + ${BRANCH_NAME};
-                echo 'currentEnv: ' + ${CurrentEnv};
-                echo 'currentTimestamp: ' + ${CurrentTimestamp};
+                echo 'Current BRANCH_NAME: ' + BRANCH_NAME;
+                echo 'currentEnv: ' + CurrentEnv;
+                echo 'currentTimestamp: ' + CurrentTimestamp;
             }
         }
 
