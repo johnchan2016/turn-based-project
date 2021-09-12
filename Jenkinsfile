@@ -26,6 +26,12 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
+         stage('Initialize'){
+            def dockerHome = tool 'myDocker'
+            env.PATH = "${dockerHome}/bin:${env.PATH}"
+            echo 'env.Path: ' + env.PATH
+        }
+
         stage("Set Configs") {
             steps {
                 script {
@@ -149,10 +155,9 @@ def GetHelmValuePath(env){
 }
 
 def GetTimestamp(){
-    def now = new Date();
-    def outputTZ = TimeZone.getTimeZone('HKT');
+    def now = java.time.LocalDateTime.now();
 
-    def currentTimeStamp = now.format("yyyyMMddhhmm", outputTZ);
+    def currentTimeStamp = now.format("yyyyMMddhhmm");
     echo "Current Timestamp: " + currentTimeStamp;
     return currentTimeStamp;
 }
