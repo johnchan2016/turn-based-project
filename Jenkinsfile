@@ -11,8 +11,9 @@ pipeline {
   }
   */
     environment {
-        registry = 'myhk2009/turn-based-api';
-        registryCredential = 'dockerHubCredentials';
+        imageName = 'myhk2009/turn-based-api';
+        dockerHubCredential = 'dockerHubCredential';
+        githubCredential = 'githubCredential';
         currentEnv = '';
         currentTimestamp = '';
         currentHelmPath = '';
@@ -28,7 +29,7 @@ pipeline {
         stage("Set Configs") {
             steps {
                 sh('printenv | sort')
-                env.CurrentTimestamp = GetTimestamp();
+                currentTimestamp = GetTimestamp();
                 currentEnv = GetEnvByBranch(env.BRANCH_NAME)
                 currentHelmPath = GetHelmValuePath(currentEnv);
                 
@@ -41,7 +42,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
-                    dockerImage = docker.build(registry + ':' + currentTimestamp + '-' + currentEnv)
+                    dockerImage = docker.build(imageName + ':' + currentTimestamp + '-' + currentEnv)
                 }
             }
         }
@@ -49,7 +50,7 @@ pipeline {
         stage('Deploy Image') {
             steps{
                 script {
-                    docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+                    docker.withRegistry( 'https://registry.hub.docker.com', dockerHubCredential ) {
                         dockerImage.push()
                     }
                 }
