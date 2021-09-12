@@ -51,7 +51,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
-                    sh 'ls'
+                    sh 'cd ./Api'
                     dockerImage = docker.build(env.ImageName + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv)
                 }
             }
