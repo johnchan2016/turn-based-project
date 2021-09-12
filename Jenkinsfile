@@ -28,14 +28,16 @@ pipeline {
         // update config & push to github
         stage("Set Configs") {
             steps {
-                sh('printenv | sort')
-                currentTimestamp = GetTimestamp();
-                currentEnv = GetEnvByBranch(env.BRANCH_NAME)
-                currentHelmPath = GetHelmValuePath(currentEnv);
-                
-                echo "Current BRANCH_NAME: " + env.BRANCH_NAME;
-                echo "currentEnv: " + currentEnv;
-                echo "currentTimestamp: " + currentTimestamp 
+                script {
+                    sh 'printenv | sort'
+                    currentTimestamp = GetTimestamp();
+                    currentEnv = GetEnvByBranch(env.BRANCH_NAME)
+                    currentHelmPath = GetHelmValuePath(currentEnv);
+                    
+                    echo "Current BRANCH_NAME: " + env.BRANCH_NAME;
+                    echo "currentEnv: " + currentEnv;
+                    echo "currentTimestamp: " + currentTimestamp
+                }
             }
         }
 
@@ -59,12 +61,14 @@ pipeline {
 
         stage('update tag in values.yaml'){
             steps {
-                if (currentEnv == '') {
-                    return;
-                }
+                script {
+                    if (currentEnv == '') {
+                        return;
+                    }
 
-                sh 'yq w ./backend-charts/api/values-${env.CurrentEnv}.yaml image.tag ${env.CurrentTimestamp}-${env.CurrentEnv}';
-                sh 'cat ./backend-charts/api/values-${env.CurrentEnv}.yaml'
+                    sh 'yq w ./backend-charts/api/values-${currentEnv}.yaml image.tag ${currentTimestamp}-${currentEnv}';
+                    sh 'cat ./backend-charts/api/values-${currentEnv}.yaml';
+                }
             }
         }
 
@@ -117,7 +121,7 @@ pipeline {
     }
 }
 
-def SetEnvByBranch(branchName){
+def GetEnvByBranch(branchName){
     println "Current branchName: " + branchName;
     
     if (branchName == '') {
