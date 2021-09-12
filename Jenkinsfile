@@ -28,8 +28,10 @@ pipeline {
         // update config & push to github
         stage('Initialize'){
             steps {
-                def dockerHome = tool 'myDocker'
-                env.PATH = "${dockerHome}/bin:${env.PATH}"
+                script {
+                    def dockerHome = tool 'myDocker'
+                    env.PATH = "${dockerHome}/bin:${env.PATH}"
+                }
                 echo 'env.Path: ' + env.PATH
             }
         }
