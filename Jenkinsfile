@@ -159,9 +159,9 @@ def GetHelmValuePath(env){
 }
 
 def GetTimestamp(){
-    def now = java.time.LocalDateTime.now();
-
+    def now = new Date();
     def currentTimeStamp = now.format("yyyyMMddhhmm");
     echo "Current Timestamp: " + currentTimeStamp;
-    return currentTimeStamp;
+    
+    return currentTimeStamp; 
 }
