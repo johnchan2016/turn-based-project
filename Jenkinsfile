@@ -11,12 +11,12 @@ pipeline {
   }
   */
     environment {
-        imageName = 'myhk2009/turn-based-api';
-        dockerHubCredential = 'dockerHubCredential';
-        githubCredential = 'githubCredential';
-        currentEnv = '';
-        currentTimestamp = '';
-        currentHelmPath = '';
+        ImageName = 'myhk2009/turn-based-api';
+        DockerHubCredential = 'dockerHubCredential';
+        GithubCredential = 'githubCredential';
+        CurrentEnv = '';
+        CurrentTimestamp = '';
+        CurrentHelmPath = '';
     }
 
     agent any
@@ -30,13 +30,13 @@ pipeline {
             steps {
                 script {
                     sh 'printenv | sort'
-                    currentTimestamp = GetTimestamp();
-                    currentEnv = GetEnvByBranch(env.BRANCH_NAME)
-                    currentHelmPath = GetHelmValuePath(currentEnv);
+                    env.CurrentTimestamp = GetTimestamp();
+                    env.CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
+                    env.CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
                     
-                    echo "Current BRANCH_NAME: " + env.BRANCH_NAME;
-                    echo "currentEnv: " + currentEnv;
-                    echo "currentTimestamp: " + currentTimestamp
+                    sh 'Current BRANCH_NAME: ${BRANCH_NAME}';
+                    sh 'currentEnv: ${CurrentEnv}';
+                    sh 'currentTimestamp: ${CurrentTimestamp}';
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
-                    dockerImage = docker.build(imageName + ':' + currentTimestamp + '-' + currentEnv)
+                    dockerImage = docker.build(env.ImageName + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv)
                 }
             }
         }
@@ -52,7 +52,7 @@ pipeline {
         stage('Deploy Image') {
             steps{
                 script {
-                    docker.withRegistry( 'https://registry.hub.docker.com', dockerHubCredential ) {
+                    docker.withRegistry( 'https://registry.hub.docker.com', DockerHubCredential ) {
                         dockerImage.push()
                     }
                 }
@@ -62,12 +62,12 @@ pipeline {
         stage('update tag in values.yaml'){
             steps {
                 script {
-                    if (currentEnv == '') {
+                    if (env.CurrentEnv == '') {
                         return;
                     }
 
-                    sh 'yq w ./backend-charts/api/values-${currentEnv}.yaml image.tag ${currentTimestamp}-${currentEnv}';
-                    sh 'cat ./backend-charts/api/values-${currentEnv}.yaml';
+                    sh 'yq w ./backend-charts/api/values-${CurrentEnv}.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
+                    sh 'cat ./backend-charts/api/values-${CurrentEnv}.yaml';
                 }
             }
         }
@@ -153,6 +153,6 @@ def GetHelmValuePath(env){
 
 def GetTimestamp(){
     def timestamp = date '+%Y%m%d%H%M';
-    println "Current Timestamp: " + timestamp;
+    echo "Current Timestamp: " + timestamp;
     return timestamp;
 }
