@@ -53,7 +53,7 @@ pipeline {
                 script {
                     sh 'cd Api'
                     sh 'ls'
-                    dockerImage = docker.build(env.ImageName + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv)
+                    dockerImage = docker.build(env.ImageName + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv, './Api')
                 }
             }
         }
