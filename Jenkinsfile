@@ -152,7 +152,11 @@ def GetHelmValuePath(env){
 }
 
 def GetTimestamp(){
-    def timestamp = date '+%Y%m%d%H%M';
+    def now = new Date();
+    def nowTimeStamp = now.format("yyyyMMddhhmm");
+    def timestamp = now '+%Y%m%d%H%M';
+
+    echo "nowTimeStamp: " + nowTimeStamp;
     echo "Current Timestamp: " + timestamp;
     return timestamp;
 }
