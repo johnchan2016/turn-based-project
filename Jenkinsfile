@@ -31,6 +31,7 @@ pipeline {
                 script {
                     def dockerHome = tool 'myDocker'
                     env.PATH = "${dockerHome}/bin:${env.PATH}"
+                    sh "sudo chown root:jenkins /run/docker.sock"
                 }
                 echo 'env.Path: ' + env.PATH
             }
