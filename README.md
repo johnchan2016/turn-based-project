@@ -11,6 +11,14 @@ docker run -d -p 8081:80 --restart always --name frontend frontend
 docker run -d -it -p 1080:8080 -p 50000:50000 -v jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock --restart always jenkins/jenkins
 docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
 
+### create credentials for github & dockerhub
+
+### jenkins plugins
+- Multibranch pipeline
+- Blue Ocean
+- Docker Pipeline
+
+
 ## helm chart
 https://medium.com/@mattiaperi/create-a-public-helm-chart-repository-with-github-pages-49b180dbb417
 

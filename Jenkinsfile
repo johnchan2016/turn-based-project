@@ -26,13 +26,13 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
-         stage('Initialize'){
+        stage('Initialize'){
             def dockerHome = tool 'myDocker'
             env.PATH = "${dockerHome}/bin:${env.PATH}"
             echo 'env.Path: ' + env.PATH
         }
 
-        stage("Set Configs") {
+        stage('Set Configs') {
             steps {
                 script {
                     sh 'printenv | sort'                    
