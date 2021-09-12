@@ -2,7 +2,7 @@ pipeline {
     /*
   environment {
     registry = "myhk2009/whale"
-    registryCredential = 'dockerHubCredentials'
+    githubCredential = 'dockerHubCredentials'
     dockerImage = ""
 
     REGION="hk"
@@ -10,42 +10,34 @@ pipeline {
     HELM_ENVFILE="env.properties"
   }
   */
+    environment {
+        registry = 'myhk2009/turn-based-api';
+        registryCredential = 'dockerHubCredentials';
+    }
 
     agent any
 
     stages {
-        stage("Git clone") {
-            /*
-            when {
-                expression { GIT_BRANCH ==~ /feature/ }
-            }
-            */
-
+        // get rolling number from env
+        // build & push image to docker hub
+        // update tag in values.yaml
+        // update config & push to github
+        stage("Set Configs") {
             steps {
-                echo "Current BRANCH_NAME: " + env.BRANCH_NAME
-                environment = GetEnvByBranch(env.BRANCH_NAME)
-                echo "env: " + environment 
-            }
-        }
-    }
-
-    /*
-    stages {
-        stage('Cloning Git') {
-            steps {
-                sh 'echo "Start Clone"'
-                checkout scm
-
-                load "${CODE_ENVFILE}"
-                sh('printenv | sort')    
+                sh('printenv | sort')
+                env.CurrentTimestamp = GetTimestamp();
+                SetEnvByBranch(env.BRANCH_NAME)
+                
+                echo "Current BRANCH_NAME: " + env.BRANCH_NAME;
+                echo "currentEnv: " + env.currentEnv;
+                echo "currentTimestamp: " + currentTimestamp 
             }
         }
 
         stage('Building image') {
             steps{
                 script {
-                    echo "VERSION: ${env.VERSION}";
-                    dockerImage = docker.build registry + ":${env.VERSION}"
+                    dockerImage = docker.build registry + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv
                 }
             }
         }
@@ -60,16 +52,26 @@ pipeline {
             }
         }
 
+        stage('update tag in values.yaml'){
+            steps {
+                if (currentEnv == '') return;
+
+                sh 'yq w ./backend-charts/api/values-${env.CurrentEnv}.yaml image.tag ${env.CurrentTimestamp}-${env.CurrentEnv}';
+                sh 'cat ./backend-charts/api/values-${env.CurrentEnv}.yaml'
+            }
+        }
+
+        /*
         stage('helm-chart') {
-            steps{
+            steps {
                 dir("helm-chart") {
                     deleteDir()
                 }
 
-                sh 'git clone https://github.com/johnchan2016/helm-chart.git'
+                 sh 'git clone https://github.com/johnchan2016/helm-chart.git'
 
-                dir("helm-chart") {
-                    withCredentials([usernamePassword(credentialsId: 'gitHubCredentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                 dir("helm-chart") {
+                    withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         script {
                             env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
                             env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
@@ -91,28 +93,47 @@ pipeline {
                                 sh 'git add .'
                                 sh "git commit -m 'Update version no to ${env.VERSION}'"
                                 sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
+
+                                sh 'cp ./backend-charts/api ./helm-chart';
+                                sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/.git'
+
+                                sh 'git add .'
+                                sh "git commit -m 'Update version no to ${env.VERSION}'"
+                                sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
                             }
                         }
                     }
-                }      
+                }
             }
         }
+        */
     }
-    */
 }
 
-def GetEnvByBranch(branchName){
+def SetEnvByBranch(branchName){
+    println "Current branchName: " + branchName;
+    
     if (branchName == '') {
-        return ''
+        return;
     }
 
     if (branchName ==~ /^(feature)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
-        return 'dev'
+        env.CurrentEnv = 'dev';
+        env.HelmValuePath = '';
     } else if  (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
-        return 'uat'
+        env.CurrentEnv = 'uat';
+        env.HelmValuePath = 'uat';
     } else if (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+)$/) {
+        env.CurrentEnv = 'prod';
+        env.HelmValuePath = 'prod';        
         return 'prod'
     } else {
         return ''
     }
+}
+
+def GetTimestamp(){
+    def timestamp = date '+%Y%m%d%H%M';
+    println "Current Timestamp: " + timestamp;
+    return timestamp;
 }
