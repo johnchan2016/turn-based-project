@@ -13,6 +13,9 @@ pipeline {
     environment {
         registry = 'myhk2009/turn-based-api';
         registryCredential = 'dockerHubCredentials';
+        currentEnv = '';
+        currentTimestamp = '';
+        currentHelmPath = '';
     }
 
     agent any
@@ -26,10 +29,11 @@ pipeline {
             steps {
                 sh('printenv | sort')
                 env.CurrentTimestamp = GetTimestamp();
-                SetEnvByBranch(env.BRANCH_NAME)
+                currentEnv = GetEnvByBranch(env.BRANCH_NAME)
+                currentHelmPath = GetHelmValuePath(currentEnv);
                 
                 echo "Current BRANCH_NAME: " + env.BRANCH_NAME;
-                echo "currentEnv: " + env.currentEnv;
+                echo "currentEnv: " + currentEnv;
                 echo "currentTimestamp: " + currentTimestamp 
             }
         }
@@ -37,7 +41,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
-                    dockerImage = docker.build registry + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv
+                    dockerImage = docker.build registry + ':' + currentTimestamp + '-' + currentEnv
                 }
             }
         }
@@ -54,7 +58,9 @@ pipeline {
 
         stage('update tag in values.yaml'){
             steps {
-                if (currentEnv == '') return;
+                if (currentEnv == '') {
+                    return;
+                }
 
                 sh 'yq w ./backend-charts/api/values-${env.CurrentEnv}.yaml image.tag ${env.CurrentTimestamp}-${env.CurrentEnv}';
                 sh 'cat ./backend-charts/api/values-${env.CurrentEnv}.yaml'
@@ -114,21 +120,29 @@ def SetEnvByBranch(branchName){
     println "Current branchName: " + branchName;
     
     if (branchName == '') {
-        return;
+        return '';
     }
 
     if (branchName ==~ /^(feature)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
-        env.CurrentEnv = 'dev';
-        env.HelmValuePath = '';
+        return 'dev';
     } else if  (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
-        env.CurrentEnv = 'uat';
-        env.HelmValuePath = 'uat';
+        return 'uat';
     } else if (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+)$/) {
-        env.CurrentEnv = 'prod';
-        env.HelmValuePath = 'prod';        
-        return 'prod'
+        return 'prod';
     } else {
+        return '';
+    }
+}
+
+def GetHelmValuePath(env){
+    if (env == 'dev') {
         return ''
+    } else if (env == 'uat'){
+        return 'uat';
+    } else if (env == 'prod'){
+        return 'prod';
+    } else {
+        return '';
     }
 }
 
