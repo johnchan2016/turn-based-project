@@ -153,7 +153,9 @@ def GetHelmValuePath(env){
 
 def GetTimestamp(){
     def now = new Date();
-    def currentTimeStamp = now.format("yyyyMMddhhmm");
+    def outputTZ = TimeZone.getTimeZone('HKT');
+
+    def currentTimeStamp = now.format("yyyyMMddhhmm", outputTZ);
     echo "Current Timestamp: " + currentTimeStamp;
-    return timestamp;
+    return currentTimeStamp;
 }
