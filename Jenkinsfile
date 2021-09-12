@@ -51,6 +51,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
+                    sh 'ls'
                     dockerImage = docker.build(env.ImageName + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv)
                 }
             }
@@ -162,6 +163,6 @@ def GetTimestamp(){
     def now = new Date();
     def currentTimeStamp = now.format("yyyyMMddhhmm");
     echo "Current Timestamp: " + currentTimeStamp;
-    
+
     return currentTimeStamp; 
 }
