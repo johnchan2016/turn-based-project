@@ -26,16 +26,17 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
+        /*
         stage('Initialize'){
             steps {
                 script {
                     def dockerHome = tool 'myDocker'
                     env.PATH = "${dockerHome}/bin:${env.PATH}"
-                    sh "sudo chown root:jenkins /run/docker.sock"
                 }
                 echo 'env.Path: ' + env.PATH
             }
         }
+        */
 
         stage('Set Configs') {
             steps {
