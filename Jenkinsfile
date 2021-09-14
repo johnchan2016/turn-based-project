@@ -50,7 +50,15 @@ pipeline {
             }
         }
 
-        stage('Building image') {
+        stage('Install libs') {
+            steps {
+                script {
+                    sh 'docker run -d -it -u 0 --privileged --name yq --rm -v "${PWD}":/workdir mikefarah/yq'
+                }
+            }
+        }
+
+/*         stage('Building image') {
             steps{
                 script {
                     sh 'cd Api'
@@ -68,7 +76,7 @@ pipeline {
                     }
                 }
             }
-        }
+        } */
 
         stage('update tag in values.yaml'){
             steps {
