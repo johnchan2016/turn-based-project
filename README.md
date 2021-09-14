@@ -1,27 +1,29 @@
 ## mount aws credentials
 ## api
-docker build -t api .
-docker run -d -it -p 8080:80 -v $HOME/.aws/:/app/.aws/:ro --restart always --name api api 
+$ docker build -t api .
+$ docker run -d -it -p 8080:80 -v $HOME/.aws/:/app/.aws/:ro --restart always --name api api 
 
 ## frontend
-docker build -t frontend .
-docker run -d -p 8081:80 --restart always --name frontend frontend
+$ docker build -t frontend .
+$ docker run -d -p 8081:80 --restart always --name frontend frontend
 
 ## run jenkins with privileged
-docker run -d -it  -u 0 --privileged --name jenkins -p 1080:8080 -p 50000:50000 \
--v /var/run/docker.sock:/var/run/docker.sock \
--v $(which docker):/usr/bin/docker \
--v $HOME/jenkins_home:/var/jenkins_home \
-jenkins/jenkins
+$ docker run -d -it -u 0 --privileged --name jenkins -p 1080:8080 -p 50000:50000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $(which docker):/usr/bin/docker \
+  -v $HOME/jenkins_home:/var/jenkins_home \
+  jenkins/jenkins
 
-docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
+$ docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
 
 ### create credentials for github & dockerhub
-
 ### jenkins plugins
 - Multibranch pipeline
 - Blue Ocean
 - Docker Pipeline
+### jenkins pipeline
+- install yq
+$ docker run -d -it -u 0 --privileged --name yq --rm -v "${PWD}":/workdir mikefarah/yq
 
 
 ## helm chart
