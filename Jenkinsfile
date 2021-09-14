@@ -81,11 +81,12 @@ pipeline {
         stage('update tag in values.yaml'){
             steps {
                 script {
-                    if (env.CurrentEnv == '') {
-                        return;
+                    if (env.CurrentEnv != '') {
+                        sh 'yq w ./backend-charts/api/values-${CurrentEnv}.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
+                    } else {
+                        sh 'yq w ./backend-charts/api/values.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
                     }
 
-                    sh 'yq w ./backend-charts/api/values-${CurrentEnv}.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
                     sh 'cat ./backend-charts/api/values-${CurrentEnv}.yaml';
                 }
             }
