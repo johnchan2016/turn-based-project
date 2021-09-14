@@ -7,8 +7,13 @@ docker run -d -it -p 8080:80 -v $HOME/.aws/:/app/.aws/:ro --restart always --nam
 docker build -t frontend .
 docker run -d -p 8081:80 --restart always --name frontend frontend
 
-## jenkins
-docker run -d -it -p 1080:8080 -p 50000:50000 -v jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock --restart always jenkins/jenkins
+## run jenkins with privileged
+docker run -d -it  -u 0 --privileged --name jenkins -p 1080:8080 -p 50000:50000 \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v $(which docker):/usr/bin/docker \
+-v $HOME/jenkins_home:/var/jenkins_home \
+jenkins/jenkins
+
 docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
 
 ### create credentials for github & dockerhub
