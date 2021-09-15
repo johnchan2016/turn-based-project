@@ -53,7 +53,8 @@ pipeline {
         stage('Install libs') {
             steps {
                 script {
-                    sh 'docker run -d -it -u 0 --privileged --name yq --rm -v "${PWD}":/workdir mikefarah/yq'
+                    //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
+                    sh 'wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY} -O /usr/bin/yq && chmod +x /usr/bin/yq'
                 }
             }
         }
