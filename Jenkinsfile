@@ -50,14 +50,14 @@ pipeline {
             }
         }
 
-        stage('Install libs') {
+ /*        stage('Install libs') {
             steps {
                 script {
                     //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
                     sh 'wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY} -O /usr/bin/yq && chmod +x /usr/bin/yq'
                 }
             }
-        }
+        } */
 
 /*         stage('Building image') {
             steps{
@@ -79,7 +79,7 @@ pipeline {
             }
         } */
 
-        stage('update tag in values.yaml'){
+/*         stage('update tag in values.yaml'){
             steps {
                 script {
                     if (env.CurrentHelmPath == '') {
@@ -91,7 +91,7 @@ pipeline {
                     }
                 }
             }
-        }
+        } */
 
         /*
         stage('helm-chart') {
