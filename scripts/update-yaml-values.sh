@@ -1,12 +1,15 @@
 #!/bin/sh
 
-ls 
+ls backend-charts
+ls backend-charts/api
+echo 'env.CurrentHelmPath: ' + env.CurrentHelmPath
 
 if [ env.CurrentHelmPath == '' ]
 then
-  yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' ./../backend-charts/api/values.yaml
+  yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' backend-charts/api/values.yaml
 else
-  yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' ./../backend-charts/api/values-${CurrentHelmPath}.yaml
+  path="backend-charts/api/values-${CurrentHelmPath}.yaml"
+  yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' ${path}
 fi
 
-cat ./backend-charts/api/values-${CurrentHelmPath}.yaml
+cat backend-charts/api/values-${CurrentHelmPath}.yaml
