@@ -19,7 +19,7 @@ pipeline {
         CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
     }
 
-    agent any
+    agent { docker { image 'alpine:3.14' } }
 
     stages {
         // get rolling number from env
@@ -50,14 +50,12 @@ pipeline {
             }
         }
 
- /*        stage('Install libs') {
+        stage('Install libs') {
             steps {
-                script {
-                    //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
-                    sh 'wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY} -O /usr/bin/yq && chmod +x /usr/bin/yq'
-                }
+                sh 'yq --version'
+                //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
             }
-        } */
+        } 
 
 /*         stage('Building image') {
             steps{
