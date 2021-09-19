@@ -1,9 +1,9 @@
 #!/bin/sh
 
-sh 'printenv | sort'
+printenv | sort
 echo 'env.CurrentHelmPath: ${CurrentHelmPath}'
 
-if [ env.CurrentHelmPath = "" ]
+if [[ -z "$CurrentHelmPath" ]]
 then
   yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' backend-charts/api/values.yaml
 
