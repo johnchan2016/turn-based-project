@@ -53,11 +53,13 @@ pipeline {
         }
 
         stage('Install libs') {
+            /*
             agent {
                 docker { 
                     image 'linuxserver/yq:version-2.12.2' 
                 } 
             }
+            */
             steps {
                 sh 'ls /usr/bin'
                 //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
