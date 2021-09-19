@@ -16,7 +16,7 @@ pipeline {
         GithubCredential = 'githubCredential';
         CurrentTimestamp = GetTimestamp();
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
-        IMAGE_TAG = CurrentEnv + '-' + CurrentTimestamp
+        IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp"
         HELM_VALUE_PATH = GetHelmValuePath(CurrentEnv);
     }
 
