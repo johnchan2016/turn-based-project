@@ -19,7 +19,7 @@ pipeline {
         CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
     }
 
-    agent { docker { image 'alpine:3.14' } }
+    agent { docker { image 'busybox:1.34' } }
 
     stages {
         // get rolling number from env
