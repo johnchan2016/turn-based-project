@@ -52,7 +52,7 @@ pipeline {
 
         stage('Install libs') {
             steps {
-                sh 'docker --version'
+                sh 'ls /usr/bin/yq --version'
                 //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
             }
         } 
