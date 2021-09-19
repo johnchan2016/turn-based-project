@@ -65,6 +65,7 @@ pipeline {
         stage('update tag in values.yaml'){
             steps {
                 script {
+                    sh "chmod +x -R ${env.WORKSPACE}"
                     sh './scripts/update-yaml-values.sh';
                     /*
                     if (env.CurrentHelmPath == '') {
