@@ -53,12 +53,13 @@ pipeline {
         stage('Install libs') {
             agent { 
                 docker { 
-                    image 'linuxserver/yq:version-2.12.2' 
+                    //image 'linuxserver/yq:version-2.12.2' 
+                    image 'busybox:1.34'
                 } 
             }
 
             steps {
-                sh 'ls /usr'
+                sh 'ls /usr/bin/yq'
                 //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
             }
         } 
