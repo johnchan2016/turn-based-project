@@ -28,18 +28,6 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
-        /*
-        stage('Initialize'){
-            steps {
-                script {
-                    def dockerHome = tool 'myDocker'
-                    env.PATH = "${dockerHome}/bin:${env.PATH}"
-                }
-                echo 'env.Path: ' + env.PATH
-            }
-        }
-        */
-
         stage('Set Configs') {
             steps {
                 script {
@@ -52,21 +40,8 @@ pipeline {
             }
         }
 
-        stage('Install libs') {
-            /*
-            agent {
-                docker { 
-                    image 'linuxserver/yq:version-2.12.2' 
-                } 
-            }
-            */
-            steps {
-                sh 'ls /usr/bin'
-                //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
-            }
-        } 
-
-/*         stage('Building image') {
+        /*
+        stage('Building image') {
             steps{
                 script {
                     sh 'cd Api'
@@ -84,9 +59,10 @@ pipeline {
                     }
                 }
             }
-        } */
-
-/*         stage('update tag in values.yaml'){
+        }
+        */
+  
+        stage('update tag in values.yaml'){
             steps {
                 script {
                     if (env.CurrentHelmPath == '') {
@@ -98,7 +74,7 @@ pipeline {
                     }
                 }
             }
-        } */
+        }
 
         /*
         stage('helm-chart') {
