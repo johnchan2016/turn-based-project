@@ -2,6 +2,6 @@
 
 printenv | sort
 
-yq eval '.image.tag = "dev-202109192228"' backend-charts/api/values.yaml > backend-charts/api/values2.yaml
+yq eval '.image.tag = "dev-202109192228"' $HELM_VALUE_PATH > $HELM_VALUE_PATH
 
-cat backend-charts/api/values2.yaml
+cat $HELM_VALUE_PATH
