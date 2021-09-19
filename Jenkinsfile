@@ -20,10 +20,7 @@ pipeline {
     }
 
     agent {
-        docker { 
-            //image 'linuxserver/yq:version-2.12.2' 
-            image 'busybox:1.34'
-        } 
+        dockerfile true 
     }
 
     stages {
