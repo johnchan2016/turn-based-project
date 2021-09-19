@@ -19,7 +19,7 @@ pipeline {
         CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
     }
 
-    agent { docker { image 'busybox:1.34' } }
+    agent none
 
     stages {
         // get rolling number from env
@@ -51,6 +51,12 @@ pipeline {
         }
 
         stage('Install libs') {
+            agent { 
+                docker { 
+                    image 'linuxserver/yq:version-2.12.2' 
+                } 
+            }
+
             steps {
                 sh 'ls /usr'
                 //sh 'docker run -d -it -u 0 --privileged --name yq -v "${PWD}":/workdir mikefarah/yq'
