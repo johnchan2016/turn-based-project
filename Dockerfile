@@ -1,11 +1,11 @@
-FROM busybox:1.34
+FROM ubuntu:18.04
 
 WORKDIR /project/
 
 COPY . .
 
-RUN apk update
-RUN apk add wget
+RUN apt-get update \ 
+    && apt-get install -y wget
 
 ARG VERSION=v4.13.0
 ARG BINARY=yq_linux_386
