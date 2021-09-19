@@ -16,7 +16,7 @@ pipeline {
         GithubCredential = 'githubCredential';
         CurrentTimestamp = GetTimestamp();
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
-        CurrentHelmPath = GetHelmValuePath(env.CurrentEnv);
+        CurrentHelmPath = GetHelmValuePath(CurrentEnv);
     }
 
     agent {
