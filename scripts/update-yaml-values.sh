@@ -1,16 +1,7 @@
 #!/bin/bash
 
 printenv | sort
-echo $CurrentHelmPath
 
-if [[ -z "$CurrentHelmPath" ]]
-then
-  yq eval '.image.tag = $CurrentEnv-$CurrentTimestamp' backend-charts/api/values.yaml > backend-charts/api/values.yaml
+yq eval '.image.tag = $IMAGE_TAG' $HELM_VALUE_PATH > $HELM_VALUE_PATH
 
-  cat backend-charts/api/values.yaml
-else
-  path="backend-charts/api/values_$CurrentHelmPath.yaml"
-  yq eval '.image.tag = $CurrentEnv-$CurrentTimestamp' $path > $path
-
-  cat $path
-fi
+cat $HELM_VALUE_PATH
