@@ -4,8 +4,8 @@ WORKDIR /project/
 
 COPY . .
 
-RUN apt-get update
-RUN apt-get install -y wget
+RUN apk update
+RUN apk add wget
 
 ARG VERSION=v4.13.0
 ARG BINARY=yq_linux_386
