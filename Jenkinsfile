@@ -16,7 +16,8 @@ pipeline {
         GithubCredential = 'githubCredential';
         CurrentTimestamp = GetTimestamp();
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
-        CurrentHelmPath = GetHelmValuePath(CurrentEnv);
+        IMAGE_TAG = CurrentEnv + '-' + CurrentTimestamp
+        HELM_VALUE_PATH = GetHelmValuePath(CurrentEnv);
     }
 
     agent {
@@ -147,22 +148,20 @@ def GetEnvByBranch(branchName){
     }
 }
 
-def GetHelmValuePath(env){
-    if (env == 'dev') {
-        return ''
-    } else if (env == 'uat'){
-        return 'uat';
-    } else if (env == 'prod'){
-        return 'prod';
-    } else {
-        return '';
-    }
-}
-
 def GetTimestamp(){
     def now = new Date();
     def currentTimeStamp = now.format("yyyyMMddhhmm");
     echo "Current Timestamp: " + currentTimeStamp;
 
     return currentTimeStamp; 
+}
+
+def GetHelmValuePath(env){
+    if (env == 'dev') {
+        return 'backend-charts/api/values.yaml';
+    } else if (env == 'uat' || env == 'prod'){
+        return "backend-charts/api/values_$CurrentHelmPath.yaml"
+    } else {
+        return '';
+    }
 }
