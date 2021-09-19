@@ -5,12 +5,12 @@ echo 'env.CurrentHelmPath: ${CurrentHelmPath}'
 
 if [[ -z "${CurrentHelmPath}" ]]
 then
-  yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' backend-charts/api/values.yaml
+  yq eval '.image.tag = ${CurrentEnv}-${CurrentTimestamp}' backend-charts/api/values.yaml > backend-charts/api/values.yaml
 
   cat backend-charts/api/values.yaml
 else
   path="backend-charts/api/values_${CurrentHelmPath}.yaml"
-  yq eval '.image.tag = "${CurrentEnv}-${CurrentTimestamp}"' ${path}
+  yq eval '.image.tag = ${CurrentEnv}-${CurrentTimestamp}' ${path} > ${path}
 
-  cat backend-charts/api/values_${CurrentHelmPath}.yaml
+  cat ${path}
 fi
