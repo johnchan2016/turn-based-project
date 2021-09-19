@@ -46,7 +46,7 @@ pipeline {
                 script {
                     sh 'cd Api'
                     sh 'ls'
-                    dockerImage = docker.build(env.ImageName + ':' + env.CurrentTimestamp + '-' + env.CurrentEnv, './Api')
+                    dockerImage = docker.build(env.ImageName + ':' + env.CurrentEnv + '-' + env.CurrentTimestamp, './Api')
                 }
             }
         }
@@ -65,13 +65,16 @@ pipeline {
         stage('update tag in values.yaml'){
             steps {
                 script {
+                    sh './scripts/update-yaml-values.sh';
+                    /*
                     if (env.CurrentHelmPath == '') {
-                        sh 'yq w ./backend-charts/api/values.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
+                        sh "yq eval '.image.tag = ' ./backend-charts/api/values.yaml  ${CurrentTimestamp}-${CurrentEnv}";
                         sh 'cat ./backend-charts/api/values.yaml';
                     } else {
-                        sh 'yq w ./backend-charts/api/values-${CurrentHelmPath}.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
+                        sh 'yq eval ./backend-charts/api/values-${CurrentHelmPath}.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
                         sh 'cat ./backend-charts/api/values-${CurrentHelmPath}.yaml';
                     }
+                    */
                 }
             }
         }
