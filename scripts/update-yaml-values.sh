@@ -9,7 +9,7 @@ cat backend-charts/api/values-new.yaml
 
 rm $HELM_VALUE_PATH
 
-mv  backend-charts/api/values-new.yaml > $HELM_VALUE_PATH
+mv backend-charts/api/values-new.yaml $HELM_VALUE_PATH
 
 echo 'backend-charts/api/values-new.yaml'
 cat $HELM_VALUE_PATH
