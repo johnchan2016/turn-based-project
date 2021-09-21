@@ -75,6 +75,15 @@ pipeline {
         }
         */
 
+        stage('update tag in values.yaml'){
+            steps {
+                script {
+                    sh "chmod +x -R ${env.WORKSPACE}"
+                    sh './scripts/update-yaml-values.sh';
+                }
+            }
+        }        
+
         stage('helm-chart') {
             steps {
                 dir("turn-based-api-chart") {
@@ -82,7 +91,6 @@ pipeline {
                 }
 
                 script {
-                    sh "chmod +x -R ${env.WORKSPACE}"
                     sh './scripts/remove-unused-value-files.sh';
                 }
 
