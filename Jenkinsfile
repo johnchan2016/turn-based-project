@@ -86,7 +86,7 @@ pipeline {
                 sh 'ls'
                 sh 'cp -r backend-charts/api/* turn-based-api-chart'
                 echo '***** list files 2 *****'
-                sh 'ls'
+                sh 'ls -R'
                 sh 'helm package ./*'
                 sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
