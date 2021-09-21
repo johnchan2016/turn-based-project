@@ -82,8 +82,7 @@ pipeline {
 
                 sh 'mkdir turn-based-api-chart'
                 sh 'cp -r backend-charts/api/* turn-based-api-chart'
-                sh 'cd turn-based-api-chart'
-                sh 'helm package ./*'
+                sh 'helm package turn-based-api-chart/* --version=$IMAGE_TAG -f $HELM_VALUE_PATH'
                 sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
                 echo '***** get content of index.yaml *****'
