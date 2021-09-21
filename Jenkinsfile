@@ -14,6 +14,7 @@ pipeline {
         ImageName = 'myhk2009/turn-based-api';
         DockerHubCredential = 'dockerHubCredential';
         GithubCredential = 'githubCredential';
+
         CurrentTimestamp = GetTimestamp();
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
         IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp"
@@ -29,6 +30,8 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
+
+        /*
         stage('Set Configs') {
             steps {
                 script {
@@ -41,7 +44,6 @@ pipeline {
             }
         }
 
-        /*
         stage('Building image') {
             steps{
                 script {
@@ -61,36 +63,35 @@ pipeline {
                 }
             }
         }
-        */
   
         stage('update tag in values.yaml'){
             steps {
                 script {
                     sh "chmod +x -R ${env.WORKSPACE}"
                     sh './scripts/update-yaml-values.sh';
-                    /*
-                    if (env.CurrentHelmPath == '') {
-                        sh "yq eval '.image.tag = ' ./backend-charts/api/values.yaml  ${CurrentTimestamp}-${CurrentEnv}";
-                        sh 'cat ./backend-charts/api/values.yaml';
-                    } else {
-                        sh 'yq eval ./backend-charts/api/values-${CurrentHelmPath}.yaml image.tag ${CurrentTimestamp}-${CurrentEnv}';
-                        sh 'cat ./backend-charts/api/values-${CurrentHelmPath}.yaml';
-                    }
-                    */
                 }
             }
         }
+        */
 
-        /*
         stage('helm-chart') {
             steps {
-                dir("helm-chart") {
+                dir("turn-based-api-chart") {
                     deleteDir()
                 }
 
-                 sh 'git clone https://github.com/johnchan2016/helm-chart.git'
+                sh 'cp backend-charts/api/* turn-based-api-chart'
+                echo '***** list folders *****'
+                sh 'ls'
+                sh 'helm package ./*'
+                sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
-                 dir("helm-chart") {
+                echo '***** get content of index.yaml *****'
+                sh 'cat index.yaml '
+                sh 'git add . && git commit -m "create helm chart for version $IMAGE_TAG" && git push origin master'
+
+                /*
+                 dir("turn-based-api-chart") {
                     withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         script {
                             env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
@@ -102,8 +103,8 @@ pipeline {
                                                     
                             sh 'git config --global user.name "johnchan"'
                             sh 'git config --global user.email myhk2009@gmail.com'
-                            sh "echo VERSION=${env.VERSION} >> ${HELM_ENVFILE}"
-                            sh "echo REGION=${REGION} >> ${HELM_ENVFILE}"
+                            sh "echo VERSION=${env.VERSION} >> $HELM_ENVFILE"
+                            sh "echo REGION=${REGION} >> $HELM_ENVFILE"
 
                             def gitStatus = sh(script: 'git status', returnStdout: true)
                             echo "gitStatus: ${gitStatus}"
@@ -111,22 +112,22 @@ pipeline {
                                 echo 'nothing to commit'
                             } else {
                                 sh 'git add .'
-                                sh "git commit -m 'Update version no to ${env.VERSION}'"
+                                sh "git commit -m 'Update version no to $IMAGE_TAG'"
                                 sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
 
                                 sh 'cp ./backend-charts/api ./helm-chart';
                                 sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/.git'
 
                                 sh 'git add .'
-                                sh "git commit -m 'Update version no to ${env.VERSION}'"
+                                sh "git commit -m 'Update version no to $IMAGE_TAG'"
                                 sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
                             }
                         }
                     }
                 }
+                */
             }
         }
-        */
     }
 }
 
