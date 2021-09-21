@@ -17,8 +17,9 @@ pipeline {
 
         CurrentTimestamp = GetTimestamp();
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
-        IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp"
-        HELM_VALUE_PATH = GetHelmValuePath(CurrentEnv);
+        IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp";
+        HELM_VALUE_FILE = GetHelmValueFile(CurrentEnv);
+        HELM_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
     }
 
     agent {
@@ -80,14 +81,9 @@ pipeline {
                     deleteDir()
                 }
 
-                sh 'mkdir turn-based-api-chart'
-                sh 'cp -r backend-charts/api/* turn-based-api-chart'
-                sh 'helm package turn-based-api-chart/* --version=$IMAGE_TAG -f $HELM_VALUE_PATH'
-                sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
-
-                echo '***** get content of index.yaml *****'
-                sh 'cat index.yaml '
-                sh 'git add . && git commit -m "create helm chart for version $IMAGE_TAG" && git push origin master'
+                script {
+                    sh './scripts/remove-unused-value-files.sh';
+                }
 
                 /*
                  dir("turn-based-api-chart") {
@@ -156,7 +152,7 @@ def GetTimestamp(){
     return currentTimeStamp; 
 }
 
-def GetHelmValuePath(env){
+def GetHelmValueFile(env){
     if (env == 'dev') {
         return 'backend-charts/api/values.yaml';
     } else if (env == 'uat' || env == 'prod'){
