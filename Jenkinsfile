@@ -80,6 +80,8 @@ pipeline {
                     deleteDir()
                 }
 
+                sh 'mkdir turn-based-api-chart'
+
                 echo '***** list files *****'
                 sh 'ls'
                 sh 'cp backend-charts/api/* turn-based-api-chart'
