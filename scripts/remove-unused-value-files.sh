@@ -4,14 +4,18 @@ mkdir turn-based-api-chart
 cp -r backend-charts/api/* turn-based-api-chart
 
 echo 'list files'
-ls
-
-echo 'list files v2'
 cd turn-based-api-chart
 ls
 
-# rm -v !("turn-based-api-chart/$HELM_VALUE_PATH")
-# mv "turn-based-api-chart/$HELM_VALUE_PATH" "turn-based-api-chart/values.yaml"
+find . -type f ! -name 'values.txt' -delete
+mv "turn-based-api-chart/new.yaml" "turn-based-api-chart/values.yaml"
+
+echo 'list files v2'
+ls
+cd ..
+
+echo 'list files v3'
+ls
 
 # helm package turn-based-api-chart/*
 # helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .
