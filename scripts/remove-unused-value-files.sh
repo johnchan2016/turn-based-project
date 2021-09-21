@@ -8,7 +8,7 @@ cd turn-based-api-chart
 ls
 
 find . -type f -name 'values*.txt' -delete
-mv "turn-based-api-chart/new.yaml" "turn-based-api-chart/values.yaml"
+mv "new.yaml" "values.yaml"
 
 echo 'list files v2'
 ls
