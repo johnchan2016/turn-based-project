@@ -84,7 +84,7 @@ pipeline {
 
                 echo '***** list files *****'
                 sh 'ls'
-                sh 'cp backend-charts/api/* turn-based-api-chart'
+                sh 'cp -r backend-charts/api/* turn-based-api-chart'
                 echo '***** list files 2 *****'
                 sh 'ls'
                 sh 'helm package ./*'
