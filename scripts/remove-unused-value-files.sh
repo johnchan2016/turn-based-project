@@ -7,7 +7,7 @@ echo 'list files'
 cd turn-based-api-chart
 ls
 
-find . -type f -name 'values*.txt' -delete
+find . -type f -name 'values*.yaml' -delete
 mv "new.yaml" "values.yaml"
 
 echo 'list files v2'
