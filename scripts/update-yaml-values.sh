@@ -1,7 +1,5 @@
 #!/bin/bash
 
-printenv | sort
-
 yq eval '.image.tag = env(IMAGE_TAG)' $HELM_VALUE_PATH > backend-charts/api/values-new.yaml
 
 echo 'remove old & replace new'
