@@ -82,6 +82,7 @@ pipeline {
                 }
 
                 script {
+                    sh "chmod +x -R ${env.WORKSPACE}"
                     sh './scripts/remove-unused-value-files.sh';
                 }
 
