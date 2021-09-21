@@ -80,8 +80,10 @@ pipeline {
                     deleteDir()
                 }
 
+                echo '***** list files *****'
+                sh 'ls'
                 sh 'cp backend-charts/api/* turn-based-api-chart'
-                echo '***** list folders *****'
+                echo '***** list files 2 *****'
                 sh 'ls'
                 sh 'helm package ./*'
                 sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
