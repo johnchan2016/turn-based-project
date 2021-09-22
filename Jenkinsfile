@@ -32,7 +32,6 @@ pipeline {
         // update tag in values.yaml
         // update config & push to github
 
-        /*
         stage('Set Configs') {
             steps {
                 script {
@@ -64,16 +63,6 @@ pipeline {
                 }
             }
         }
-  
-        stage('update tag in values.yaml'){
-            steps {
-                script {
-                    sh "chmod +x -R ${env.WORKSPACE}"
-                    sh './scripts/update-yaml-values.sh';
-                }
-            }
-        }
-        */
 
         stage('update tag in values.yaml'){
             steps {
@@ -84,53 +73,59 @@ pipeline {
             }
         }        
 
-        stage('helm-chart') {
+        stage('package-helm-chart') {
             steps {
                 dir("turn-based-api-chart") {
                     deleteDir()
                 }
 
-                script {
-                    sh './scripts/remove-unused-value-files.sh';
-                }
+                withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    script {
+                        // remove all values*.yaml & rename new.yaml to values.yaml
+                        sh './scripts/remove-unused-value-files.sh';
 
-                /*
-                 dir("turn-based-api-chart") {
-                    withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        script {
-                            env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                            env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                        env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
+                        env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
 
-                            if (fileExists("${HELM_ENVFILE}")) {
-                                sh "rm -rf  ${HELM_ENVFILE}"
-                            }
-                                                    
-                            sh 'git config --global user.name "johnchan"'
-                            sh 'git config --global user.email myhk2009@gmail.com'
-                            sh "echo VERSION=${env.VERSION} >> $HELM_ENVFILE"
-                            sh "echo REGION=${REGION} >> $HELM_ENVFILE"
+                        sh 'helm package turn-based-api-chart'
+                        sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
-                            def gitStatus = sh(script: 'git status', returnStdout: true)
-                            echo "gitStatus: ${gitStatus}"
-                            if (gitStatus =~ /(.*)nothing to commit(.*)/){
-                                echo 'nothing to commit'
-                            } else {
-                                sh 'git add .'
-                                sh "git commit -m 'Update version no to $IMAGE_TAG'"
-                                sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
-
-                                sh 'cp ./backend-charts/api ./helm-chart';
-                                sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/.git'
-
-                                sh 'git add .'
-                                sh "git commit -m 'Update version no to $IMAGE_TAG'"
-                                sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
-                            }
+                        sh "echo '***** get content of index.yaml *****'"
+                        sh 'cat index.yaml'
+                        sh 'git add .'
+                        sh 'git commit -m "create helm chart for version $IMAGE_TAG"'
+                        sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/turn-based-helm-chart.git'
+                        
+                        /*
+                        if (fileExists("${HELM_ENVFILE}")) {
+                            sh "rm -rf  ${HELM_ENVFILE}"
                         }
+                                                
+                        sh 'git config --global user.name "johnchan"'
+                        sh 'git config --global user.email myhk2009@gmail.com'
+                        sh "echo VERSION=${env.VERSION} >> $HELM_ENVFILE"
+                        sh "echo REGION=${REGION} >> $HELM_ENVFILE"
+
+                        def gitStatus = sh(script: 'git status', returnStdout: true)
+                        echo "gitStatus: ${gitStatus}"
+                        if (gitStatus =~ /(.*)nothing to commit(.*)/){
+                            echo 'nothing to commit'
+                        } else {
+                            sh 'git add .'
+                            sh "git commit -m 'Update version no to $IMAGE_TAG'"
+                            sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
+
+                            sh 'cp ./backend-charts/api ./helm-chart';
+                            sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/.git'
+
+                            sh 'git add .'
+                            sh "git commit -m 'Update version no to $IMAGE_TAG'"
+                            sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
+                        }
+                        */
                     }
                 }
-                */
-            }
+            }            
         }
     }
 }
