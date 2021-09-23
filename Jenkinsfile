@@ -109,7 +109,7 @@ pipeline {
                 sh './scripts/remove-helm-chart-folder.sh';
 
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
-                sh 'cp -r backend-charts/api/* turn-based-helm-chart/api'
+                sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
 
                 withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
