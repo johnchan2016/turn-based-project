@@ -31,7 +31,7 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
-
+        /*
         stage('Set Configs') {
             steps {
                 script {
@@ -71,7 +71,8 @@ pipeline {
                     sh './scripts/update-yaml-values.sh';
                 }
             }
-        }        
+        }
+        
 
         stage('package-helm-chart') {
             steps {
@@ -95,37 +96,34 @@ pipeline {
                         sh 'git add .'
                         sh 'git commit -m "create helm chart for version $IMAGE_TAG"'
                         sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/turn-based-helm-chart.git'
-                        
-                        /*
-                        if (fileExists("${HELM_ENVFILE}")) {
-                            sh "rm -rf  ${HELM_ENVFILE}"
-                        }
-                                                
-                        sh 'git config --global user.name "johnchan"'
-                        sh 'git config --global user.email myhk2009@gmail.com'
-                        sh "echo VERSION=${env.VERSION} >> $HELM_ENVFILE"
-                        sh "echo REGION=${REGION} >> $HELM_ENVFILE"
-
-                        def gitStatus = sh(script: 'git status', returnStdout: true)
-                        echo "gitStatus: ${gitStatus}"
-                        if (gitStatus =~ /(.*)nothing to commit(.*)/){
-                            echo 'nothing to commit'
-                        } else {
-                            sh 'git add .'
-                            sh "git commit -m 'Update version no to $IMAGE_TAG'"
-                            sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
-
-                            sh 'cp ./backend-charts/api ./helm-chart';
-                            sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/.git'
-
-                            sh 'git add .'
-                            sh "git commit -m 'Update version no to $IMAGE_TAG'"
-                            sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
-                        }
-                        */
                     }
                 }
-            }            
+            }
+        }
+        */
+
+        stage('clone & update helm project'){
+            steps{
+                sh 'rm -r turn-based-helm-chart'
+                sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
+                sh 'cp -r backend-charts/api/* turn-based-helm-chart/api'
+                sh 'cd turn-based-helm-chart'
+
+                withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
+                    env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+
+                    sh 'helm package turn-based-api-chart'
+                    sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
+
+                    sh "echo '***** get content of index.yaml *****'"
+                    sh 'cat index.yaml'
+                    sh "echo '***** *****'"
+                    sh 'git add .'
+                    sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
+                    sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/turn-based-helm-chart.git'
+                }
+            }
         }
     }
 }
