@@ -2,5 +2,5 @@
 
 if [ -d "turn-based-helm-chart" ] 
 then
-    rm turn-based-helm-chart
+    rm -rf turn-based-helm-chart
 fi
