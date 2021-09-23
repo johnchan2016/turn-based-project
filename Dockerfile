@@ -17,6 +17,6 @@ RUN apt-get update \
 #     && chmod +x /usr/bin/yq
 
 
-RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash > install-helm.sh \ 
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 > install-helm.sh \ 
     && chmod u+x install-helm.sh \
     && ./install-helm.sh
