@@ -8,8 +8,8 @@ COPY . .
 RUN apt-get update \ 
     && apt-get install -y git
 
-# RUN apt-get update \ 
-#     && apt-get install -y wget curl
+RUN apt-get update \ 
+    && apt-get install -y wget curl
 
 # ARG VERSION=v4.13.0
 # ARG BINARY=yq_linux_386
@@ -17,6 +17,6 @@ RUN apt-get update \
 #     && chmod +x /usr/bin/yq
 
 
-# RUN curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > install-helm.sh \ 
-#     && chmod u+x install-helm.sh \
-#     && ./install-helm.sh
+RUN curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > install-helm.sh \ 
+    && chmod u+x install-helm.sh \
+    && ./install-helm.sh
