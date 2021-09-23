@@ -104,8 +104,9 @@ pipeline {
 
         stage('clone & update helm project'){
             steps{
+                sh 'ls'
                 sh "chmod +x -R ${env.WORKSPACE}"
-                sh './remove-helm-chart-folder.sh';
+                sh './scripts/remove-helm-chart-folder.sh';
 
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/api/* turn-based-helm-chart/api'
