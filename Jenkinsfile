@@ -110,8 +110,8 @@ pipeline {
                 sh 'cd turn-based-helm-chart'
 
                 withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                    env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                    def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
+                    def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
 
                     sh 'helm package turn-based-api-chart'
                     sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
@@ -121,7 +121,7 @@ pipeline {
                     sh "echo '***** *****'"
                     sh 'git add .'
                     sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                    sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/turn-based-helm-chart.git'
+                    sh 'git push https://$encodedUser:$encodedPass@github.com/johnchan2016/turn-based-helm-chart.git'
                 }
             }
         }
