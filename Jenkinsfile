@@ -110,18 +110,20 @@ pipeline {
                 sh 'cd turn-based-helm-chart'
 
                 withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                    def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                    script{
+                        def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
+                        def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
 
-                    sh 'helm package turn-based-api-chart'
-                    sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
+                        sh 'helm package turn-based-api-chart'
+                        sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
-                    sh "echo '***** get content of index.yaml *****'"
-                    sh 'cat index.yaml'
-                    sh "echo '***** *****'"
-                    sh 'git add .'
-                    sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                    sh 'git push https://$encodedUser:$encodedPass@github.com/johnchan2016/turn-based-helm-chart.git'
+                        sh "echo '***** get content of index.yaml *****'"
+                        sh 'cat index.yaml'
+                        sh "echo '***** *****'"
+                        sh 'git add .'
+                        sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
+                        sh 'git push https://$encodedUser:$encodedPass@github.com/johnchan2016/turn-based-helm-chart.git'
+                    }
                 }
             }
         }
