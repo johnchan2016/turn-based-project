@@ -104,6 +104,10 @@ pipeline {
 
         stage('clone & update helm project'){
             steps{
+                dir("turn-based-helm-chart") {
+                    deleteDir()
+                }
+
                 sh 'rm -r turn-based-helm-chart'
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/api/* turn-based-helm-chart/api'
