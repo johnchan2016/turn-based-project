@@ -110,7 +110,10 @@ pipeline {
                 sh './scripts/remove-helm-chart-folder.sh';
 
                 dir("$HUDSON_HOME/workspace") {
-                    sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
+                    git branch: "main",
+                    credentialsId: 'githubCredential',
+                    url: 'https://github.com/johnchan2016/turn-based-helm-chart.git'
+                    //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                     sh 'cp -r $WORKSPACE/backend-charts/* $HELM_CHART_HOME'
 
                     dir('turn-based-helm-chart'){
