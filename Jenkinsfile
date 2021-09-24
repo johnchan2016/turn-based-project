@@ -102,6 +102,15 @@ pipeline {
         }
         */
 
+        stage('change folder'){
+            steps{
+                script{
+                    sh 'ls'
+                }
+            }
+        }
+
+        /*
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R ${env.WORKSPACE}"
@@ -138,6 +147,7 @@ pipeline {
                 
             }
         }
+        */
     }
 }
 
