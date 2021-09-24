@@ -104,7 +104,6 @@ pipeline {
 
         stage('clone & update helm project'){
             steps{
-                sh 'ls'
                 sh "chmod +x -R ${env.WORKSPACE}"
                 sh './scripts/remove-helm-chart-folder.sh';
 
@@ -112,13 +111,8 @@ pipeline {
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
                 sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
-                echo '***** git remote *****'
-                sh 'git fetch helm-origin'
-                sh 'git branch -a'
-                sh 'git remote -v'
-                echo '***** *****'      
 
-                /*
+                
                 withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     script{
                         def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
@@ -135,10 +129,10 @@ pipeline {
                         sh "echo '***** *****'"               
                         sh 'git add .'
                         sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                        sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git origin master'
+                        sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
                     }
                 }
-                */
+                
             }
         }
     }
