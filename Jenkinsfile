@@ -110,6 +110,8 @@ pipeline {
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
+                sh '**** list files in turn-based-helm-chart ****'
+                sh 'ls'
                 sh 'git remote remove helm-origin'
                 sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
 
@@ -128,9 +130,9 @@ pipeline {
                         sh "echo '***** get content of index.yaml *****'"
                         sh 'cat index.yaml'
                         sh "echo '***** *****'"               
-                        sh 'git add .'
-                        sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                        sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
+                        sh 'git add turn-based-helm-chart'
+                        //sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
+                        //sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
                     }
                 }
                 
