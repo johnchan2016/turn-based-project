@@ -111,9 +111,10 @@ pipeline {
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
+                sh 'git remote add origin https://github.com/johnchan2016/turn-based-helm-chart.git'
                 echo '***** git remote *****'
                 sh 'git branch -a'
-                sh 'git checkout origin master'
+                sh 'git remote -v'
                 echo '***** *****'      
 
                 /*
