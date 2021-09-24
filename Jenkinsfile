@@ -109,23 +109,29 @@ pipeline {
                 sh "chmod +x -R $WORKSPACE"
                 sh './scripts/remove-helm-chart-folder.sh';
 
-                dir("$HUDSON_HOME/workspace") {
+                dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
+
                     git branch: "main",
                     credentialsId: 'githubCredential',
                     url: 'https://github.com/johnchan2016/turn-based-helm-chart.git'
                     //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
-                    sh 'cp -r $WORKSPACE/backend-charts/* $HELM_CHART_HOME'
+                    //sh 'cp -r $HUDSON_HOME/workspace/temp/api/* $HELM_CHART_HOME'
 
-                    dir('turn-based-helm-chart'){
+                    //dir('turn-based-helm-chart'){
                         withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             script{
+                                sh 'echo "check file list"'
                                 sh 'ls'
+                                sh 'cp $HUDSON_HOME/workspace/temp/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+
+                                /*
                                 def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
 
                                 if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
                                     sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
                                 }
+                                
 
                                 def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
                                 def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
@@ -142,9 +148,11 @@ pipeline {
                                 sh 'git add turn-based-helm-chart -n'
                                 sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
                                 sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
+                            
+                                */
                             }
                         }
-                    }                    
+                    //}                    
                 }
 
                 /*
