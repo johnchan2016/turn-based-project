@@ -5,11 +5,11 @@ WORKDIR /project/
 COPY . .
 
 
-RUN apt-get update \ 
-    && apt-get install -y wget git
-
 # RUN apt-get update \ 
-#     && apt-get install -y wget curl git
+#     && apt-get install -y git
+
+RUN apt-get update \ 
+    && apt-get install -y wget curl git
 
 # ARG VERSION=v4.13.0
 # ARG BINARY=yq_linux_386
