@@ -110,14 +110,10 @@ pipeline {
                 sh './scripts/remove-helm-chart-folder.sh';
 
                 sh 'cd $HUDSON_HOME/workspace'
-                //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
+                sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'ls'                
                 sh 'cp -r $PWD/backend-charts/* $HELM_CHART_HOME'
-                sh 'cd $HELM_CHART_HOME'
-                sh "echo '**** list files in turn-based-helm-chart ****'"
-                sh 'ls'
-
-                /*
+                sh 'cd $HELM_CHART_HOME'                
                 sh 'git remote remove helm-origin'
                 sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
 
@@ -140,8 +136,7 @@ pipeline {
                         sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
                         sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
                     }
-                }
-                */
+                }                
             }
         }        
     }
