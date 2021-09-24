@@ -111,7 +111,6 @@ pipeline {
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
-                sh 'git checkout -b master origin/master'
                 sh "echo '***** git remote *****'"
                 sh 'git branch'
                 sh "echo '***** *****'"           
