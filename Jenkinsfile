@@ -110,6 +110,7 @@ pipeline {
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
+                sh 'git remote remove helm-origin'
                 sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
 
                 
