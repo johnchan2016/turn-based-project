@@ -112,7 +112,8 @@ pipeline {
                 dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
                     deleteDir();
                     //sh 'cd $HUDSON_HOME/workspace'
-                    //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'            
+                    //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
+                    sh 'printenv | sort'       
                     sh 'cp -r $PWD/backend-charts/* $HELM_CHART_HOME'
                     sh 'ls'                    
                 }
