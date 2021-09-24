@@ -111,7 +111,12 @@ pipeline {
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
+                sh 'git checkout -b master origin/master'
+                sh "echo '***** git remote *****'"
+                sh 'git remote -v'
+                sh "echo '***** *****'"           
 
+                /*
                 withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     script{
                         def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
@@ -125,12 +130,13 @@ pipeline {
 
                         sh "echo '***** get content of index.yaml *****'"
                         sh 'cat index.yaml'
-                        sh "echo '***** *****'"
+                        sh "echo '***** *****'"               
                         sh 'git add .'
                         sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
                         sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git'
                     }
                 }
+                */
             }
         }
     }
