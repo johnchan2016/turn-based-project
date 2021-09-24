@@ -117,10 +117,10 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             script{
                                 sh 'ls'
-                                def gitRemoteOrigin = sh(script: 'git status', returnStdout: true)
+                                def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
 
-                                if (gitRemoteOrigin =~ /(.*)helm-origin(.*)/){
+                                if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
                                     sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
                                 }
 
@@ -130,7 +130,7 @@ pipeline {
                                 sh 'git config --global user.name "johnchan"'
                                 sh 'git config --global user.email myhk2009@gmail.com'
 
-                                sh 'helm package turn-based-helm-chart/api --app-version $IMAGE_TAG'
+                                sh 'helm package api --app-version $IMAGE_TAG'
                                 sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
                                 sh "echo '***** get content of index.yaml *****'"
