@@ -31,6 +31,19 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
+
+        stage('Set Configs') {
+            steps {
+                script {
+                    sh 'printenv | sort'                    
+                }
+
+                echo 'Current BRANCH_NAME: ' + BRANCH_NAME;
+                echo 'currentEnv: ' + CurrentEnv;
+                echo 'currentTimestamp: ' + CurrentTimestamp;
+            }
+        }
+                
         /*
         stage('Set Configs') {
             steps {
@@ -101,14 +114,6 @@ pipeline {
             }
         }
         */
-
-        stage('change folder'){
-            steps{
-                script{
-                    sh 'ls'
-                }
-            }
-        }
 
         /*
         stage('clone & update helm project'){
