@@ -112,8 +112,8 @@ pipeline {
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
                 echo '***** git remote *****'
-                sh 'git checkout master'
-                sh 'git branch --list'
+                sh 'git branch -a'
+                sh 'git checkout origin master'
                 echo '***** *****'      
 
                 /*
@@ -133,7 +133,7 @@ pipeline {
                         sh "echo '***** *****'"               
                         sh 'git add .'
                         sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                        sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git'
+                        sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git origin master'
                     }
                 }
                 */
