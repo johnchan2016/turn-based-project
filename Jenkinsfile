@@ -112,7 +112,7 @@ pipeline {
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
                 sh "echo '***** git remote *****'"
-                sh 'git branch'
+                sh 'git branch --list'
                 sh "echo '***** *****'"           
 
                 /*
