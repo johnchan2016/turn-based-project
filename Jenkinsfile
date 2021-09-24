@@ -111,9 +111,10 @@ pipeline {
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
                 sh 'cp -r backend-charts/* turn-based-helm-chart'
                 sh 'cd turn-based-helm-chart'
-                sh "echo '***** git remote *****'"
+                echo '***** git remote *****'
+                sh 'git checkout master'
                 sh 'git branch --list'
-                sh "echo '***** *****'"           
+                echo '***** *****'      
 
                 /*
                 withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
