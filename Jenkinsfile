@@ -113,7 +113,7 @@ pipeline {
                 sh 'cd turn-based-helm-chart'
                 sh 'git checkout -b master origin/master'
                 sh "echo '***** git remote *****'"
-                sh 'git remote -v'
+                sh 'git branch'
                 sh "echo '***** *****'"           
 
                 /*
