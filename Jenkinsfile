@@ -109,11 +109,13 @@ pipeline {
                 sh "chmod +x -R ${env.WORKSPACE}"
                 sh './scripts/remove-helm-chart-folder.sh';
 
-                sh 'cd $HUDSON_HOME/workspace'
-                //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'            
-                sh 'cp -r $PWD/backend-charts/* $HELM_CHART_HOME'
-                sh 'cd $HELM_CHART_HOME'
-                sh 'ls'
+                dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
+                    deleteDir();
+                    //sh 'cd $HUDSON_HOME/workspace'
+                    //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'            
+                    sh 'cp -r $PWD/backend-charts/* $HELM_CHART_HOME'
+                    sh 'ls'                    
+                }
 
                 /*
                 sh 'git remote remove helm-origin'
