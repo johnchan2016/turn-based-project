@@ -109,7 +109,8 @@ pipeline {
                 sh './scripts/remove-helm-chart-folder.sh';
 
                 sh 'cd $HUDSON_HOME/workspace'
-                sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
+                //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
+                sh 'ls'                
                 sh 'cp -r $PWD/backend-charts/* $HELM_CHART_HOME'
                 sh 'cd $HELM_CHART_HOME'
                 sh "echo '**** list files in turn-based-helm-chart ****'"
