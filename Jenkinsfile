@@ -31,19 +31,7 @@ pipeline {
         // build & push image to docker hub
         // update tag in values.yaml
         // update config & push to github
-
-        stage('Set Configs') {
-            steps {
-                script {
-                    sh 'printenv | sort'                    
-                }
-
-                echo 'Current BRANCH_NAME: ' + BRANCH_NAME;
-                echo 'currentEnv: ' + CurrentEnv;
-                echo 'currentTimestamp: ' + CurrentTimestamp;
-            }
-        }
-                
+        
         /*
         stage('Set Configs') {
             steps {
@@ -77,11 +65,11 @@ pipeline {
             }
         }
 
-        stage('update tag in values.yaml'){
+        stage('create temp new.yaml'){
             steps {
                 script {
                     sh "chmod +x -R ${env.WORKSPACE}"
-                    sh './scripts/update-yaml-values.sh';
+                    sh './scripts/update-value-file.sh';
                 }
             }
         }
@@ -115,17 +103,18 @@ pipeline {
         }
         */
 
-        /*
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R ${env.WORKSPACE}"
                 sh './scripts/remove-helm-chart-folder.sh';
 
                 sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
-                sh 'cp -r backend-charts/* turn-based-helm-chart'
-                sh 'cd turn-based-helm-chart'
+                sh 'cp -r $PWD/backend-charts/* $HELM_CHART_HOME'
+                sh 'cd $HELM_CHART_HOME'
                 sh "echo '**** list files in turn-based-helm-chart ****'"
                 sh 'ls'
+
+                /*
                 sh 'git remote remove helm-origin'
                 sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
 
@@ -149,10 +138,9 @@ pipeline {
                         sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
                     }
                 }
-                
+                */
             }
-        }
-        */
+        }        
     }
 }
 
