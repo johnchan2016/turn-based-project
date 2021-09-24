@@ -20,6 +20,7 @@ pipeline {
         IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp";
         HELM_VALUE_FILE = GetHelmValueFile(CurrentEnv);
         HELM_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
+        HELM_CHART_HOME = ""
     }
 
     agent {
