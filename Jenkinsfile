@@ -66,7 +66,7 @@ pipeline {
             }
         }
 
-        stage('create temp new.yaml'){
+        stage('update value.yaml'){
             steps {
                 script {
                     sh "chmod +x -R ${env.WORKSPACE}"
@@ -107,7 +107,7 @@ pipeline {
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R $WORKSPACE"
-                //sh './scripts/update-value-file.sh';
+                sh './scripts/update-value-file.sh';
 
                 dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
 
@@ -123,9 +123,8 @@ pipeline {
                                 sh 'echo "check file list"'
                                 sh 'ls'
                                 sh 'cp -r $WORKSPACE/backend-charts/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
-                                sh 'git remote'
 
-                                /*
+                                
                                 def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
 
@@ -149,8 +148,6 @@ pipeline {
                                 sh 'git add turn-based-helm-chart -n'
                                 sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
                                 sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
-                            
-                                */
                             }
                         }
                     //}                    
