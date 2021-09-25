@@ -103,7 +103,7 @@ pipeline {
                             sh 'git config --global user.name "johnchan"'
                             sh 'git config --global user.email myhk2009@gmail.com'
 
-                            sh 'helm package api --app-version $IMAGE_TAG'
+                            sh 'helm package api
                             sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
                             sh "echo '***** get content of index.yaml *****'"
@@ -140,8 +140,7 @@ def GetEnvByBranch(branchName){
 
 def GetTimestamp(){
     def now = new Date();
-    def currentTimeStamp = now.format("yyyyMMddhhmm", TimeZone.getTimeZone('Asia/Hong_Kong'));
-    echo "Current Timestamp: " + currentTimeStamp;
+    def currentTimeStamp = now.format("yyyyMMddHHmm", TimeZone.getTimeZone('Asia/Hong_Kong'));
 
     return currentTimeStamp; 
 }
