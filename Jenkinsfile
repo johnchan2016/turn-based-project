@@ -131,8 +131,6 @@ pipeline {
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
                                 echo "gitBranch: ${gitBranch}"
                                 */
-                                sh 'git remote -v'
-                                sh 'git remote remove helm-origin'
 
                                 /*
                                 if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
