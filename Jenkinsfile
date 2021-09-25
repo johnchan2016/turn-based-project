@@ -107,7 +107,7 @@ pipeline {
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R $WORKSPACE"
-                sh './scripts/update-value-file.sh';
+                //sh './scripts/update-value-file.sh';
 
                 dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
 
