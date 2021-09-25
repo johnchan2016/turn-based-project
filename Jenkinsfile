@@ -19,7 +19,7 @@ pipeline {
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
         IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp";
         HELM_VALUE_FILE = GetHelmValueFile(CurrentEnv);
-        HELM_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
+        HELM_OLD_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
         HELM_CHART_HOME = "$HUDSON_HOME/workspace/turn-based-helm-chart"
     }
 
@@ -74,37 +74,9 @@ pipeline {
                 }
             }
         }
-        
-
-        stage('package-helm-chart') {
-            steps {
-                dir("turn-based-api-chart") {
-                    deleteDir()
-                }
-
-                withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    script {
-                        // remove all values*.yaml & rename new.yaml to values.yaml
-                        sh './scripts/remove-unused-value-files.sh';
-
-                        env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                        env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
-
-                        sh 'helm package turn-based-api-chart'
-                        sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
-
-                        sh "echo '***** get content of index.yaml *****'"
-                        sh 'cat index.yaml'
-                        sh 'git add .'
-                        sh 'git commit -m "create helm chart for version $IMAGE_TAG"'
-                        sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/turn-based-helm-chart.git'
-                    }
-                }
-            }
-        }
         */
 
-        /*
+        
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R $WORKSPACE"
@@ -142,17 +114,7 @@ pipeline {
                     }               
                 }
             }
-        }
-        */
-
-        stage('test datetime timezone'){
-            steps {
-                script {
-                    def now = new Date()
-                    println now.format("yyMMddHHmm", TimeZone.getTimeZone('Asia/Hong_Kong'))
-                }
-            }
-        }
+        }        
     }
 }
 
@@ -176,7 +138,7 @@ def GetEnvByBranch(branchName){
 
 def GetTimestamp(){
     def now = new Date();
-    def currentTimeStamp = now.format("yyyyMMddhhmm");
+    def currentTimeStamp = now.format("yyyyMMddhhmm", TimeZone.getTimeZone('Asia/Hong_Kong'));
     echo "Current Timestamp: " + currentTimeStamp;
 
     return currentTimeStamp; 
