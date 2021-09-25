@@ -146,9 +146,11 @@ pipeline {
         */
 
         stage('test datetime timezone'){
-            script {
-                def now = new Date()
-                println now.format("yyMMddHHmm", TimeZone.getTimeZone('Asia/Hong_Kong'))
+            steps {
+                script {
+                    def now = new Date()
+                    println now.format("yyMMddHHmm", TimeZone.getTimeZone('Asia/Hong_Kong'))
+                }
             }
         }
     }
