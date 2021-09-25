@@ -122,7 +122,7 @@ pipeline {
                             script{
                                 sh 'echo "check file list"'
                                 sh 'ls'
-                                sh 'cp $WORKSPACE/backend-charts/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+                                sh 'cp -r $WORKSPACE/backend-charts/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
                                 sh 'git remote'
 
                                 /*
