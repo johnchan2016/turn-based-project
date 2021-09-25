@@ -104,6 +104,7 @@ pipeline {
         }
         */
 
+        /*
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R $WORKSPACE"
@@ -115,76 +116,41 @@ pipeline {
                     git branch: "main",
                     credentialsId: 'githubCredential',
                     url: 'https://github.com/johnchan2016/turn-based-helm-chart.git'
-                    //sh 'git clone https://github.com/johnchan2016/turn-based-helm-chart.git'
-                    //sh 'cp -r $HUDSON_HOME/workspace/temp/api/* $HELM_CHART_HOME'
 
-                    //dir('turn-based-helm-chart'){
-                        withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                            script{
-                                sh 'echo "check file list"'
-                                sh 'ls'
-                                sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+                    withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        script{
+                            sh 'echo "check file list"'
+                            sh 'ls'
+                            sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/turn-based-helm-chart'
 
-                                /*
-                                def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
-                                def gitBranch = sh(script: 'git branch', returnStdout: true)
-                                echo "gitRemoteOrigin: ${gitRemoteOrigin}"
-                                echo "gitBranch: ${gitBranch}"
-                                */
+                            def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
+                            def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
 
-                                /*
-                                if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
-                                    sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
-                                }
-                                */
+                            sh 'git config --global user.name "johnchan"'
+                            sh 'git config --global user.email myhk2009@gmail.com'
 
-                                def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                                def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                            sh 'helm package api --app-version $IMAGE_TAG'
+                            sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
 
-                                sh 'git config --global user.name "johnchan"'
-                                sh 'git config --global user.email myhk2009@gmail.com'
-
-                                sh 'helm package api --app-version $IMAGE_TAG'
-                                sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
-
-                                sh "echo '***** get content of index.yaml *****'"
-                                sh 'cat index.yaml'
-                                sh "echo '***** *****'"               
-                                sh 'git add .'
-                                sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                                sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git'
-                            }
+                            sh "echo '***** get content of index.yaml *****'"
+                            sh 'cat index.yaml'
+                            sh "echo '***** *****'"               
+                            sh 'git add .'
+                            sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
+                            sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git'
                         }
-                    //}                    
+                    }               
                 }
-
-                /*
-                sh 'git remote remove helm-origin'
-                sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
-                
-                
-                withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    script{
-                        def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                        def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
-
-                        sh 'git config --global user.name "johnchan"'
-                        sh 'git config --global user.email myhk2009@gmail.com'
-
-                        sh 'helm package turn-based-helm-chart/api --app-version $IMAGE_TAG'
-                        sh 'helm repo index --url https://github.com/johnchan2016/turn-based-helm-chart.git .'
-
-                        sh "echo '***** get content of index.yaml *****'"
-                        sh 'cat index.yaml'
-                        sh "echo '***** *****'"               
-                        sh 'git add turn-based-helm-chart -n'
-                        sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                        sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
-                    }
-                }
-                */
             }
-        }        
+        }
+        */
+
+        stage('test datetime timezone'){
+            script {
+                def now = new Date()
+                println now.format("yyMMddHHmm", TimeZone.getTimeZone('Asia/Hong_Kong'))
+            }
+        }
     }
 }
 
