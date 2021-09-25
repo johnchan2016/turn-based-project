@@ -18,6 +18,7 @@ pipeline {
         CurrentTimestamp = GetTimestamp();
         CurrentEnv = GetEnvByBranch(env.BRANCH_NAME)
         IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp";
+        HELM_CHART_VERSION = "1.0.0-$CurrentEnv.$CurrentTimestamp";
         HELM_VALUE_FILE = GetHelmValueFile(CurrentEnv);
         HELM_OLD_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
         HELM_OLD_CHART_PATH = "backend-charts/api/Chart.yaml";
