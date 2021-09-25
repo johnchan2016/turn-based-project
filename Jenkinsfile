@@ -110,6 +110,7 @@ pipeline {
                 sh './scripts/update-value-file.sh';
 
                 dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
+                    sh 'rm -rf *'
 
                     git branch: "main",
                     credentialsId: 'githubCredential',
@@ -122,7 +123,7 @@ pipeline {
                             script{
                                 sh 'echo "check file list"'
                                 sh 'ls'
-                                sh 'cp -r $WORKSPACE/backend-charts/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+                                sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/turn-based-helm-chart'
 
                                 
                                 def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
