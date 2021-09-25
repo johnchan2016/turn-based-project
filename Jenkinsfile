@@ -211,9 +211,9 @@ def GetTimestamp(){
 
 def GetHelmValueFile(env){
     if (env == 'dev') {
-        return 'backend-charts/api/values.yaml';
+        return 'values.yaml';
     } else if (env == 'uat' || env == 'prod'){
-        return "backend-charts/api/values_$CurrentHelmPath.yaml"
+        return "values_$CurrentHelmPath.yaml"
     } else {
         return '';
     }
