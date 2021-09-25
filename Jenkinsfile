@@ -149,7 +149,7 @@ pipeline {
                                 sh "echo '***** get content of index.yaml *****'"
                                 sh 'cat index.yaml'
                                 sh "echo '***** *****'"               
-                                sh 'git add turn-based-helm-chart -n'
+                                sh 'git add turn-based-helm-chart'
                                 sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
                                 sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
                             }
