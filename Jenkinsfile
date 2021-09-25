@@ -20,6 +20,7 @@ pipeline {
         IMAGE_TAG = "$CurrentEnv-$CurrentTimestamp";
         HELM_VALUE_FILE = GetHelmValueFile(CurrentEnv);
         HELM_OLD_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
+        HELM_OLD_CHART_PATH = "backend-charts/api/Chart.yaml";
         HELM_CHART_HOME = "$HUDSON_HOME/workspace/turn-based-helm-chart"
     }
 
@@ -80,7 +81,7 @@ pipeline {
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R $WORKSPACE"
-                sh './scripts/update-value-file.sh';
+                sh './scripts/update-chart-files.sh';
 
                 dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
                     sh 'rm -rf *'
