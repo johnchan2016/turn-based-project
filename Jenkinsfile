@@ -127,12 +127,15 @@ pipeline {
 
                                 
                                 def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
+                                def gitBranch = sh(script: 'git branch', returnStdout: true)
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
+                                echo "gitBranch: ${gitBranch}"
 
+                                /*
                                 if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
                                     sh 'git remote add helm-origin https://github.com/johnchan2016/turn-based-helm-chart.git'
                                 }
-                                
+                                */
 
                                 def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
                                 def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
