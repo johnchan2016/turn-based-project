@@ -8,5 +8,3 @@ yq eval '.image.tag = env(IMAGE_TAG)' $HELM_VALUE_PATH > backend-charts/api/new.
 
 find . -type f -name 'values*.yaml' -delete
 mv "new.yaml" "values.yaml"
-
-cp backend-charts/api/* $HUDSON_HOME/workspace/temp/api

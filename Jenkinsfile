@@ -107,7 +107,7 @@ pipeline {
         stage('clone & update helm project'){
             steps{
                 sh "chmod +x -R $WORKSPACE"
-                sh './scripts/remove-helm-chart-folder.sh';
+                sh './scripts/update-value-file.sh';
 
                 dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
 
@@ -122,7 +122,8 @@ pipeline {
                             script{
                                 sh 'echo "check file list"'
                                 sh 'ls'
-                                sh 'cp $HUDSON_HOME/workspace/temp/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+                                sh 'cp $WORKSPACE/backend-charts/api/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+                                sh 'git remote'
 
                                 /*
                                 def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
