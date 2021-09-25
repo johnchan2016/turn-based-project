@@ -17,6 +17,7 @@ $ docker run -d -it -u 0 --privileged --name jenkins -p 1080:8080 -p 50000:50000
 $ docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
 
 ### create credentials for github & dockerhub
+- github: a/c & personal access token (pw)
 ### jenkins plugins
 - Multibranch pipeline
 - Blue Ocean
