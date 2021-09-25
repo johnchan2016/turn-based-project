@@ -130,6 +130,7 @@ pipeline {
                                 def gitBranch = sh(script: 'git branch', returnStdout: true)
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
                                 echo "gitBranch: ${gitBranch}"
+                                sh 'git remote -v'
 
                                 /*
                                 if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
@@ -149,7 +150,7 @@ pipeline {
                                 sh "echo '***** get content of index.yaml *****'"
                                 sh 'cat index.yaml'
                                 sh "echo '***** *****'"               
-                                sh 'git add turn-based-helm-chart'
+                                sh 'git add .'
                                 sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
                                 sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
                             }
