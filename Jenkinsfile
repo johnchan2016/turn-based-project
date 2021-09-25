@@ -125,12 +125,14 @@ pipeline {
                                 sh 'ls'
                                 sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/turn-based-helm-chart'
 
-                                
+                                /*
                                 def gitRemoteOrigin = sh(script: 'git remote', returnStdout: true)
                                 def gitBranch = sh(script: 'git branch', returnStdout: true)
                                 echo "gitRemoteOrigin: ${gitRemoteOrigin}"
                                 echo "gitBranch: ${gitBranch}"
+                                */
                                 sh 'git remote -v'
+                                sh 'git remote remove helm-origin'
 
                                 /*
                                 if (gitRemoteOrigin !=~ /(.*)helm-origin(.*)/){
@@ -152,7 +154,7 @@ pipeline {
                                 sh "echo '***** *****'"               
                                 sh 'git add .'
                                 sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                                sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git helm-origin main'
+                                sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git'
                             }
                         }
                     //}                    
