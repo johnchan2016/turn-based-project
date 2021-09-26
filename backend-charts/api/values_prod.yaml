@@ -1,7 +1,8 @@
-# Default values for api.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 namespace: turn-based-prod
+
+labels:
+  env: prod
+  tier: backend
 
 replicaCount: 1
 
@@ -21,3 +22,26 @@ requests:
 limits:
   memory: "256Mi"
   cpu: "512m"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+  - host: api-ingress-prod.com
+    paths:
+    - pathType: Prefix
+      path: "/"
+      backend:
+        service:
+          name: api-service-prod
+          port:
+            number: 80
+  tlsEnabled: false              
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

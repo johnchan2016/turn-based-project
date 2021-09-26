@@ -47,5 +47,14 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "api.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "api.name" . }}
+env: {{ .Values.labels.env }}
+tier: {{ .Values.labels.tier }}
+{{- end }}
+
+{{- define "api.serviceName" -}}
+{{- printf "%s-%s-%s" .Chart.Name "service" .Values.labels.env }}
+{{- end }}
+
+{{- define "api.ingressName" -}}
+{{- printf "%s-%s-%s" .Chart.Name "ingress" .Values.labels.env }}
 {{- end }}
