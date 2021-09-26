@@ -7,7 +7,7 @@ pipeline {
         CURRENT_TIMESTAMP = GetTimestamp();
         CURRENT_ENV = GetEnvByBranch(BRANCH_NAME)
         IMAGE_TAG = "$CURRENT_ENV-$CURRENT_TIMESTAMP";
-        HELM_CHART_VERSION = "1.0.0-$CURRENT_ENV.$CURRENT_TIMESTAMP";
+        HELM_APP_VERSION = "1.0.10-$CURRENT_ENV.$CURRENT_TIMESTAMP";
         HELM_VALUE_FILE = GetHelmValueFile(CURRENT_ENV);
         
         HELM_REPO_FOLDER_NAME = "turn-based-api-chart";
