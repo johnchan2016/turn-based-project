@@ -38,10 +38,10 @@ $ mkdir helm-chart-sources && cd ./helm-chart-sources/
 $ helm create helm-chart-sources/helm-chart-test
 
 # Lint the chart
-$ helm lint helm-chart-sources/*
+$ helm lint helm-chart-sources/.
 
 # Create the Helm chart package
-$ helm package helm-chart-sources/*
+$ helm package helm-chart-sources/.
 
 # Create the Helm chart repository index
 $ helm repo index --url <github-page-url> .
@@ -53,6 +53,7 @@ $ git add . && git commit -m "Initial commit" && git push
 $ helm repo add <repo-name> <github-page-url>
 $ helm search repo <repo-name>
 
-# Configure helm client
-$ helm repo add myhelmrepo https://mattiaperi.github.io/helm-chart/
-
+<!-- chart version must be semantic -->
+<!-- appversion do not need to be semantic version -->
+# update helm chart repo
+$ helm repo update
