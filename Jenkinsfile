@@ -83,7 +83,7 @@ pipeline {
                             sh 'git config --global user.email myhk2009@gmail.com'
 
                             sh 'helm package api'
-                            sh 'helm repo index --url https://johnchan2016.github.io/turn-based-api-chart .'
+                            sh 'helm repo index --url https://johnchan2016.github.io/turn-based-api-chart --merge index.yaml .'
          
                             sh 'git add .'
                             sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
