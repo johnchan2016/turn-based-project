@@ -44,10 +44,14 @@ $ helm lint helm-chart-sources/*
 $ helm package helm-chart-sources/*
 
 # Create the Helm chart repository index
-$ helm repo index --url <github-repo> .
+$ helm repo index --url <github-page-url> .
 
 # Push the git repository on GitHub
-$ git add . && git commit -m “Initial commit” && git push origin master
+$ git add . && git commit -m "Initial commit" && git push
+
+# check if helm repo is successfully setup
+$ helm repo add <repo-name> <github-page-url>
+$ helm search repo <repo-name>
 
 # Configure helm client
 $ helm repo add myhelmrepo https://mattiaperi.github.io/helm-chart/
