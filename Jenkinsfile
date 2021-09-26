@@ -10,11 +10,12 @@ pipeline {
         HELM_CHART_VERSION = "1.0.0-$CURRENT_ENV.$CURRENT_TIMESTAMP";
         HELM_VALUE_FILE = GetHelmValueFile(CURRENT_ENV);
         
+        HELM_REPO_FOLDER_NAME = "turn-based-api-chart";
         HELM_OLD_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
         HELM_NEW_VALUE_PATH = "backend-charts/api/new_value.yaml";
         HELM_OLD_CHART_PATH = "backend-charts/api/Chart.yaml";        
         HELM_NEW_CHART_PATH = "backend-charts/api/new_chart.yaml";
-        HELM_CHART_HOME = "$HUDSON_HOME/workspace/turn-based-helm-chart"
+        HELM_CHART_HOME = "$HUDSON_HOME/workspace/$HELM_REPO_FOLDER_NAME"
     }
 
     agent {
@@ -63,18 +64,17 @@ pipeline {
                 sh "chmod +x -R $WORKSPACE"
                 sh './scripts/update-chart-files.sh';
 
-                dir("$HUDSON_HOME/workspace/turn-based-helm-chart") {
+                dir("$HUDSON_HOME/workspace/$HELM_REPO_FOLDER_NAME") {
                     sh 'rm -rf *'
 
                     git branch: "main",
                     credentialsId: 'githubCredential',
-                    url: 'https://github.com/johnchan2016/turn-based-helm-chart.git'
+                    url: 'https://github.com/johnchan2016/turn-based-api-chart.git'
 
                     withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         script{
-                            sh 'echo "check file list"'
                             sh 'ls'
-                            sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/turn-based-helm-chart'
+                            sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/$HELM_REPO_FOLDER_NAME'
 
                             def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
                             def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
@@ -87,7 +87,7 @@ pipeline {
          
                             sh 'git add .'
                             sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
-                            sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-helm-chart.git'
+                            sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-api-chart.git'
                         }
                     }               
                 }
