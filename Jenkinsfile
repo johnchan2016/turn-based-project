@@ -1,51 +1,50 @@
 pipeline {
-    /*
-  environment {
-    registry = "myhk2009/whale"
-    registryCredential = 'dockerHubCredentials'
-    dockerImage = ""
+    environment {
+        ImageName = 'myhk2009/turn-based-api';
+        DockerHubCredential = 'dockerHubCredential';
+        GithubCredential = 'githubCredential';
 
-    REGION="hk"
-    CODE_ENVFILE="env.groovy"
-    HELM_ENVFILE="env.properties"
-  }
-  */
-
-    agent any
-
-    stages {
-        stage("Git clone") {
-            /*
-            when {
-                expression { GIT_BRANCH ==~ /feature/ }
-            }
-            */
-
-            steps {
-                echo "Current BRANCH_NAME: " + env.BRANCH_NAME
-                environment = GetEnvByBranch(env.BRANCH_NAME)
-                echo "env: " + environment
-            }
-        }
+        CURRENT_TIMESTAMP = GetTimestamp();
+        CURRENT_ENV = GetEnvByBranch(BRANCH_NAME)
+        IMAGE_TAG = "$CURRENT_ENV-$CURRENT_TIMESTAMP";
+        HELM_APP_VERSION = "1.0.10-$CURRENT_ENV.$CURRENT_TIMESTAMP";
+        HELM_VALUE_FILE = GetHelmValueFile(CURRENT_ENV);
+        
+        HELM_REPO_FOLDER_NAME = "turn-based-api-chart";
+        HELM_OLD_VALUE_PATH = "backend-charts/api/$HELM_VALUE_FILE";
+        HELM_NEW_VALUE_PATH = "backend-charts/api/new_value.yaml";
+        HELM_OLD_CHART_PATH = "backend-charts/api/Chart.yaml";        
+        HELM_NEW_CHART_PATH = "backend-charts/api/new_chart.yaml";
+        HELM_CHART_HOME = "$HUDSON_HOME/workspace/$HELM_REPO_FOLDER_NAME"
     }
 
-    /*
-    stages {
-        stage('Cloning Git') {
-            steps {
-                sh 'echo "Start Clone"'
-                checkout scm
+    agent {
+        dockerfile true 
+    }
 
-                load "${CODE_ENVFILE}"
-                sh('printenv | sort')    
+    stages {
+        // get rolling number from env
+        // build & push image to docker hub
+        // update tag in values.yaml
+        // update config & push to github
+                
+        stage('Set Configs') {
+            steps {
+                script {
+                    sh 'printenv | sort'                    
+                }
+
+                echo 'Current BRANCH_NAME: ' + BRANCH_NAME;
+                echo 'CURRENT_ENV: ' + CURRENT_ENV;
+                echo 'CURRENT_TIMESTAMP: ' + CURRENT_TIMESTAMP;
             }
         }
 
         stage('Building image') {
             steps{
                 script {
-                    echo "VERSION: ${env.VERSION}";
-                    dockerImage = docker.build registry + ":${env.VERSION}"
+                    sh 'ls'
+                    dockerImage = docker.build(ImageName + ':' + IMAGE_TAG, './Api')
                 }
             }
         }
@@ -53,66 +52,79 @@ pipeline {
         stage('Deploy Image') {
             steps{
                 script {
-                    docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+                    docker.withRegistry( 'https://registry.hub.docker.com', DockerHubCredential ) {
                         dockerImage.push()
                     }
                 }
             }
         }
-
-        stage('helm-chart') {
+        
+        stage('clone & update helm project'){
             steps{
-                dir("helm-chart") {
-                    deleteDir()
-                }
+                sh "chmod +x -R $WORKSPACE"
+                sh './scripts/update-chart-files.sh';
 
-                sh 'git clone https://github.com/johnchan2016/helm-chart.git'
+                dir("$HUDSON_HOME/workspace/$HELM_REPO_FOLDER_NAME") {
+                    sh 'rm -rf *'
 
-                dir("helm-chart") {
-                    withCredentials([usernamePassword(credentialsId: 'gitHubCredentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        script {
-                            env.encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
-                            env.encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                    git branch: "main",
+                    credentialsId: 'githubCredential',
+                    url: 'https://github.com/johnchan2016/turn-based-api-chart.git'
 
-                            if (fileExists("${HELM_ENVFILE}")) {
-                                sh "rm -rf  ${HELM_ENVFILE}"
-                            }
-                                                    
+                    withCredentials([usernamePassword(credentialsId: githubCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        script{
+                            sh 'ls'
+                            sh 'cp -r $WORKSPACE/backend-charts/* $HUDSON_HOME/workspace/$HELM_REPO_FOLDER_NAME'
+
+                            def encodedUser=URLEncoder.encode(GIT_USERNAME, "UTF-8")
+                            def encodedPass=URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+
                             sh 'git config --global user.name "johnchan"'
                             sh 'git config --global user.email myhk2009@gmail.com'
-                            sh "echo VERSION=${env.VERSION} >> ${HELM_ENVFILE}"
-                            sh "echo REGION=${REGION} >> ${HELM_ENVFILE}"
 
-                            def gitStatus = sh(script: 'git status', returnStdout: true)
-                            echo "gitStatus: ${gitStatus}"
-                            if (gitStatus =~ /(.*)nothing to commit(.*)/){
-                                echo 'nothing to commit'
-                            } else {
-                                sh 'git add .'
-                                sh "git commit -m 'Update version no to ${env.VERSION}'"
-                                sh 'git push https://${encodedUser}:${encodedPass}@github.com/johnchan2016/helm-chart.git'
-                            }
+                            sh 'helm package api'
+                            sh 'helm repo index --url https://johnchan2016.github.io/turn-based-api-chart --merge index.yaml .'
+         
+                            sh 'git add .'
+                            sh 'git commit -m "create turn-based helm chart for version $IMAGE_TAG"'
+                            sh 'git push https://' + encodedUser+ ':' + encodedPass + '@github.com/johnchan2016/turn-based-api-chart.git'
                         }
-                    }
-                }      
+                    }               
+                }
             }
-        }
+        }        
     }
-    */
 }
 
-def GetEnvByBranch(branchName){
+def GetEnvByBranch(branchName){   
     if (branchName == '') {
-        return ''
+        return '';
     }
 
     if (branchName ==~ /^(feature)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
-        return 'dev'
+        return 'dev';
     } else if  (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+){0}$/) {
-        return 'uat'
+        return 'uat';
     } else if (branchName ==~ /^(release)\/[\w-]+(:\d+\.\d+\.\d+)$/) {
-        return 'prod'
+        return 'prod';
     } else {
-        return ''
+        return '';
+    }
+}
+
+def GetTimestamp(){
+    def now = new Date();
+    def currentTimeStamp = now.format("yyyyMMddHHmm", TimeZone.getTimeZone('Asia/Hong_Kong'));
+
+    return currentTimeStamp; 
+}
+
+def GetHelmValueFile(env){
+    if (env == 'dev') {
+        return 'values.yaml';
+    } else if (env == 'uat' || env == 'prod'){
+        return "values_$CurrentHelmPath.yaml"
+    } else {
+        return '';
     }
 }

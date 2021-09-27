@@ -1,38 +1,60 @@
-## mount aws credentials
-## api
-docker build -t api .
-docker run -d -it -p 8080:80 -v $HOME/.aws/:/app/.aws/:ro --restart always --name api api 
+# Jenkins CI
 
-## frontend
-docker build -t frontend .
-docker run -d -p 8081:80 --restart always --name frontend frontend
+1. mount aws credentials
 
-## jenkins
-docker run -d -it -p 1080:8080 -p 50000:50000 -v jenkins:/var/jenkins_home --restart always jenkins/jenkins
-docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
+2. create docker image 
+  - api
+  ```
+  $ docker build -t api .
+  $ docker run -d -it -p 8080:80 -v $HOME/.aws/:/app/.aws/:ro --restart always --name api api
+  ```
 
-## helm chart
-https://medium.com/@mattiaperi/create-a-public-helm-chart-repository-with-github-pages-49b180dbb417
+  - frontend
+  ```
+  $ docker build -t frontend .
+  $ docker run -d -p 8081:80 --restart always --name frontend frontend
+  ```
 
-$ git clone <github-repo> && cd
-# avoid bot crawling on my repository, so add robots.txt file
-$ echo -e “User-Agent: *\nDisallow: /” > robots.txt
+3. Build Jenkins
+  - run jenkins with privileged
+  ```
+  $ docker run -d -it -u 0 --privileged --name jenkins -p 1080:8080 -p 50000:50000 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $(which docker):/usr/bin/docker \
+    -v $HOME/jenkins_home:/var/jenkins_home \
+    jenkins/jenkins
+  ```
 
-$ mkdir helm-chart-sources && cd ./helm-chart-sources/
-$ helm create helm-chart-sources/helm-chart-test
 
-# Lint the chart
-$ helm lint helm-chart-sources/*
+  - Get Jenkins initial Admin Password
+  ```
+  $ docker exec <container_name> cat /var/jenkins_home/secrets/initialAdminPassword
+  ```
 
-# Create the Helm chart package
-$ helm package helm-chart-sources/*
+  - install neccessary jenkins plugins
+    - Multibranch pipeline
+    - Blue Ocean
+    - Docker Pipeline
 
-# Create the Helm chart repository index
-$ helm repo index --url <github-repo> .
+  - create credentials for github & dockerhub
+    - github: a/c & personal access token (pw)
+  
+  - jenkins pipeline 
+    - create a Dockerfile & set pipeline to run this file
+    - set up stages
+      - build docker image 
+      - push image to docker hub
+      - set up github page for helm repo, ref: https://medium.com/@mattiaperi/create-a-public-helm-chart-repository-with-github-pages-49b180dbb417
 
-# Push the git repository on GitHub
-$ git add . && git commit -m “Initial commit” && git push origin master
+  - check if helm repo is successfully setup
+  ```
+  $ helm repo add <repo-name> <github-page-url>
+  $ helm search repo <repo-name>
+  ```
 
-# Configure helm client
-$ helm repo add myhelmrepo https://mattiaperi.github.io/helm-chart/
-
+  <!-- chart version must be semantic -->
+  <!-- appversion do not need to be semantic version -->
+  - update helm chart repo
+  ```
+  $ helm repo update
+  ```
