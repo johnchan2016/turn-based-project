@@ -1,6 +1,8 @@
 # Jenkins CI
 
 1. mount aws credentials
+  - read aws credentials being configured
+  - upsert & read records from dynamoDB to display
 
 2. create docker image 
   - api
